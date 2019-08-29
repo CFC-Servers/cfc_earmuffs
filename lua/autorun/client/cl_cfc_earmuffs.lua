@@ -85,6 +85,10 @@ local function shouldPlayCombatSound( soundData )
 
     if plyInPvP then
         local volume = soundData.Volume
+        local newVolume = volume * combatSoundVolumeMult
+
+        print("Received combat sound ('" .. soundData.SoundName .."'), adjusting as follows: ")
+        print("Changing volume from '" .. tostring(volume) .. "' to '" .. tostring(newVolume) .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")")
         soundData.Volume = volume * combatSoundVolumeMult
 
         return true
