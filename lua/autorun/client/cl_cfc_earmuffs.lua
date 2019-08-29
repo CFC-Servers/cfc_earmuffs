@@ -1,6 +1,72 @@
-local isCombatSound = {
-
+local isImpactSound = {
+    "dirt.bulletimpact",
+    "concrete.bulletimpact",
+    "tile.bulletimpact",
+    "solidmetal.bulletimpact",
+    "drywall.impacthard",
+    "flesh.bulletimpact",
+    "wood.bulletimpact"
 }
+
+local isShellSound = {
+    "player/pl_shell1.wav",
+    "player/pl_shell2.wav",
+    "player/pl_shell3.wav"
+}
+
+local function isCombatSound( soundData )
+    -- Remove weird extra characters that get added in here
+    local soundName = string.Replace( soundData.SoundName, ")", "" )
+    soundName = string.Replace( soundName, "^", "" )
+    soundName = string.Replace( soundName, "<", "" )
+    soundName = string.lower( soundName )
+
+    local originalName = soundData.OriginalSoundName
+    originalName = string.lower( originalName )
+
+    if string.StartsWith( soundName, "weapon" ) then return true end
+    if string.StartsWith( soundName, "npc" ) then return true end
+    if string.StartsWith( soundName, "ambient/explosions" ) then return true end
+    if string.StartsWith( soundName, "cw" ) then return true end
+
+    if string.StartsWith( originalName, "weapon" ) then return true end
+    if string.StartsWith( originalName, "flesh" ) then return true end
+    if string.StartsWith( originalName, "metal" ) then return true end
+    if string.StartsWith( originalName, "cw_" ) then return true end
+
+    if isImpactSound[originalName] then return true end
+    if isShellSound[soundName] then return true end
+end
+--    -- Bigcity ambiance
+--    "ambient/misc/car2.wav",
+--    "ambient/misc/truck_drive1.wav",
+--    "ambient/misc/truck_drive2.wav",
+--    "ambient/machines/truck_pass_distant2.wav",
+--    "ambient/atmosphere/city_truckpass1.wav",
+--    "ambient/levels/streetwar/apc_distant1.wav",
+--    "ambient/levels/streetwar/apc_distant2.wav",
+--    "ambient/machines/aircraft_distant_flyby3.wav",
+--    "ambient/machines/aircraft_distant_flyby1.wav",
+--    "ambient/alarms/apc_alarm_pass1.wav",
+--    "ambient/misc/car1.wav",
+--    "ambient/misc/ambulance1.wav",
+--    "ambient/creatures/pigeon_idle4.wav",
+--    "ambient/overhead/hel1.wav",
+--    "ambient/overhead/hel2.wav",
+--    "ambient/levels/streetwar/heli_distant1.wav",
+--    "ambient/animal/dog1.wav",
+--    "ambient/animal/dog2.wav",
+--    "ambient/animal/dog3.wav",
+--    "ambient/animal/dog4.wav",
+--    "ambient/animal/dog5.wav",
+--    "ambient/animal/dog6.wav",
+--    "ambient/animal/dog7.wav",
+--    "ambient/alarms/scanner_alert_pass1.wav",
+--    "ambient/misc/police1.wav",
+--    "ambient/machines/train_horn_1.wav",
+--    "ambient/machines/train_horn_2.wav",
+--    "ambient/misc/carhonk1.wav",
+
 
 local hookName = "CFC_CombatEarmuffs"
 
@@ -12,10 +78,12 @@ local function isInPvp()
 end
 
 local function shouldPlayCombatSound( soundData )
-    local soundName = soundData.SoundName
-    if not isCombatSound[soundName] then return end
+    if not isCombatSound( soundData ) then return end
 
-    if isInPvp() then
+    local plyInPvP = true
+    --local plyInPvP = isInPvp()
+
+    if plyInPvP then
         local volume = soundData.Volume
         soundData.Volume = volume * combatSoundVolumeMult
 
