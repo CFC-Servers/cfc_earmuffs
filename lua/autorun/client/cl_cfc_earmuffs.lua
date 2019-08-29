@@ -73,23 +73,18 @@ local hookName = "CFC_CombatEarmuffs"
 local combatSoundVolumeMult = 0.2
 
 -- TODO: Store this result in a var and use pvp change hooks
-local function isInPvp()
+local function isInBuild()
     return LocalPlayer():GetNWBool( "CFC_PvP_Mode", false )
 end
 
 local function shouldPlayCombatSound( soundData )
     if not isCombatSound( soundData ) then return end
 
-    local plyInPvP = true
-    --local plyInPvP = isInPvp()
+    local plyInBuild = true
+    --local plyInBuild = isInBuild()
 
-    if plyInPvP then
+    if plyInBuild then
         print( "Received combat sound ('" .. soundData.SoundName .."'), adjusting as follows: " )
-
-        if combatSoundVolumeMult == 0 then
-             print( "Returning false to prevent the sound from playing ( Sound Multiplier at: 0 )")
-            return false
-        end
 
         local volume = soundData.Volume
         local newVolume = volume * combatSoundVolumeMult
