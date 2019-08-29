@@ -84,12 +84,18 @@ local function shouldPlayCombatSound( soundData )
     --local plyInPvP = isInPvp()
 
     if plyInPvP then
+        print( "Received combat sound ('" .. soundData.SoundName .."'), adjusting as follows: " )
+
+        if combatSoundVolumeMult == 0 then
+             print( "Returning false to prevent the sound from playing ( Sound Multiplier at: 0 )")
+            return false
+        end
+
         local volume = soundData.Volume
         local newVolume = volume * combatSoundVolumeMult
 
-        print("Received combat sound ('" .. soundData.SoundName .."'), adjusting as follows: ")
-        print("Changing volume from '" .. tostring(volume) .. "' to '" .. tostring(newVolume) .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")")
-        soundData.Volume = volume * combatSoundVolumeMult
+        print("Changing volume from '" .. tostring( volume)  .. "' to '" .. tostring( newVolume)  .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")" )
+        soundData.Volume = newVolume
 
         return true
     end
