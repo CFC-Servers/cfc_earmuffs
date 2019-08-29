@@ -36,6 +36,7 @@ hook.Add( "PopulateToolMenu", "CFC_CombatVolumeMenu", function()
         CombatSoundSlider:Dock( TOP )
         CombatSoundSlider:SetMinMax( 0, 100 )
         CombatSoundSlider:SetDecimals( 0 )
+        CombatSoundSlider:SetValue( combatSoundVolumeMult * 100 )
         CombatSoundSlider.OnValueChanged = function( _, newValue )
             combatSoundVolumeMult = newValue == 0 and 0 or newValue / 100
         end
