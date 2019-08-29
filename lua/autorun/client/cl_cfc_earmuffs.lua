@@ -24,15 +24,15 @@ local function isCombatSound( soundData )
     local originalName = soundData.OriginalSoundName
     originalName = string.lower( originalName )
 
-    if string.StartsWith( soundName, "weapon" ) then return true end
-    if string.StartsWith( soundName, "npc" ) then return true end
-    if string.StartsWith( soundName, "ambient/explosions" ) then return true end
-    if string.StartsWith( soundName, "cw" ) then return true end
+    if string.StartWith( soundName, "weapon" ) then return true end
+    if string.StartWith( soundName, "npc" ) then return true end
+    if string.StartWith( soundName, "ambient/explosions" ) then return true end
+    if string.StartWith( soundName, "cw" ) then return true end
 
-    if string.StartsWith( originalName, "weapon" ) then return true end
-    if string.StartsWith( originalName, "flesh" ) then return true end
-    if string.StartsWith( originalName, "metal" ) then return true end
-    if string.StartsWith( originalName, "cw_" ) then return true end
+    if string.StartWith( originalName, "weapon" ) then return true end
+    if string.StartWith( originalName, "flesh" ) then return true end
+    if string.StartWith( originalName, "metal" ) then return true end
+    if string.StartWith( originalName, "cw_" ) then return true end
 
     if isImpactSound[originalName] then return true end
     if isShellSound[soundName] then return true end
