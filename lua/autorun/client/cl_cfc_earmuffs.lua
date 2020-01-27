@@ -111,7 +111,20 @@ hook.Add( "PopulateToolMenu", "CFC_CombatVolumeMenu", function()
         CombatSoundSlider:SetDecimals( 0 )
         CombatSoundSlider:SetValue( combatSoundVolumeMult * 100 )
         CombatSoundSlider.OnValueChanged = function( _, newValue )
-            combatSoundVolumeMult = newValue == 0 and 0 or newValue / 100
+            combatSoundVolumeMult = newValue / 100
         end
     end )
+end )
+
+
+hook.Add( "PlayerSwitchWeapon", hookName.."_weaponSwitch", function( ply, oldWep, newWep )
+	if not ( IsValid( newWep ) ) then return end
+
+	if ( newWep.Primary ) then
+		newWep.Primary.SoundLevel = combatSoundVolumeMult * 80
+	end
+
+	if ( newWep.Secondary ) then
+		newWep.Secondary.SoundLevel = combatSoundVolumeMult * 80
+	end
 end )
