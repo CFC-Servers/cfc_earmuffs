@@ -80,11 +80,10 @@ end
 local function shouldPlayCombatSound( soundData )
     if not isCombatSound( soundData ) then return end
 
-    local plyInBuild = true
-    -- local plyInBuild = isInBuild()
+    local plyInBuild = isInBuild()
 
     if plyInBuild then
-        print( "Received combat sound ('" .. soundData.SoundName .."'), adjusting as follows: " )
+        print( "Received combat sound ('" .. soundData.SoundName .. "'), adjusting as follows: " )
 
         local volume = soundData.Volume
         local newVolume = volume * combatSoundVolumeMult
