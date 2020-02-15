@@ -16,7 +16,7 @@ local isShellSound = {
 
 local function isCombatSound( soundData )
     -- Remove weird extra characters that get added in here
-    local soundName = string.Replace( soundData.SoundName, ")", "" )
+    local soundName = string.Replace( soundData.SoundName, " )", "" )
     soundName = string.Replace( soundName, "^", "" )
     soundName = string.Replace( soundName, "<", "" )
     soundName = string.lower( soundName )
@@ -81,15 +81,15 @@ local function shouldPlayCombatSound( soundData )
     if not isCombatSound( soundData ) then return end
 
     local plyInBuild = true
-    --local plyInBuild = isInBuild()
+    -- local plyInBuild = isInBuild()
 
     if plyInBuild then
-        print( "Received combat sound ('" .. soundData.SoundName .."'), adjusting as follows: " )
+        print( "Received combat sound ( '" .. soundData.SoundName .."' ), adjusting as follows: " )
 
         local volume = soundData.Volume
         local newVolume = volume * combatSoundVolumeMult
 
-        print("Changing volume from '" .. tostring( volume)  .. "' to '" .. tostring( newVolume)  .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")" )
+        print( "Changing volume from '" .. tostring( volume )  .. "' to '" .. tostring( newVolume )  .. "' ( Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. " )" )
         soundData.Volume = newVolume
 
         return true
@@ -117,14 +117,14 @@ hook.Add( "PopulateToolMenu", "CFC_CombatVolumeMenu", function()
 end )
 
 
-hook.Add( "PlayerSwitchWeapon", hookName.."_weaponSwitch", function( ply, oldWep, newWep )
-	if not ( IsValid( newWep ) ) then return end
+hook.Add( "PlayerSwitchWeapon", hookName .. "_weaponSwitch", function( ply, oldWep, newWep )
+    if not ( IsValid( newWep ) ) then return end
 
-	if ( newWep.Primary ) then
-		newWep.Primary.SoundLevel = combatSoundVolumeMult * 80
-	end
+    if ( newWep.Primary ) then
+        newWep.Primary.SoundLevel = combatSoundVolumeMult * 80
+    end
 
-	if ( newWep.Secondary ) then
-		newWep.Secondary.SoundLevel = combatSoundVolumeMult * 80
-	end
+    if ( newWep.Secondary ) then
+        newWep.Secondary.SoundLevel = combatSoundVolumeMult * 80
+    end
 end )
