@@ -8,6 +8,8 @@ local isImpactSound = {
     "wood.bulletimpact"
 }
 
+print("test")
+
 local isShellSound = {
     "player/pl_shell1.wav",
     "player/pl_shell2.wav",
