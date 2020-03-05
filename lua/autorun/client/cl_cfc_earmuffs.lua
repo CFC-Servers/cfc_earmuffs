@@ -102,7 +102,7 @@ local function shouldPlayCombatSound( soundData )
     end
 end
 
-hook.Add( "EntityEmitSound", hookName, shouldPlayCombatSound )
+hook.Add( "EntityEmitSound", emitSoundHook, shouldPlayCombatSound )
 
 hook.Add( "PopulateToolMenu", menuOptionHook, function()
     spawnmenu.AddToolMenuOption( "Options", "CFC", "Sound Control", "Sound Control", "", "", function( panel )
@@ -149,6 +149,7 @@ local function receiveWeaponSound()
 
     local originWeapon = net.ReadEntity()
     if not originWeapon or not IsValid( originWeapon ) then return end
+    if originWeapon:GetOwner() == LocalPlayer() then return end
 
     local soundName = net.ReadString()
     local soundLevel = net.ReadUInt()
@@ -172,6 +173,7 @@ local function receiveDefaultWeaponSound()
 
     local originWeapon = net.ReadEntity()
     if not originWeapon or not IsValid( originWeapon ) then return end
+    if originWeapon:GetOwner() == LocalPlayer() then return end
 
     local soundName = net.ReadString()
 
