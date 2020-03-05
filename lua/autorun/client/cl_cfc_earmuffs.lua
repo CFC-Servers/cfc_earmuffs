@@ -152,18 +152,23 @@ local function receiveWeaponSound()
     if originWeapon:GetOwner() == LocalPlayer() then return end
 
     local soundName = net.ReadString()
-    local soundLevel = net.ReadUInt()
-    local pitchPercent = net.ReadUInt()
 
-    -- Sent as a UInt to save space(maybe?), but is actually a float between 0-1
-    local volume = net.ReadUInt()
+    -- Max value of 511, 9 bits
+    local soundLevel = net.ReadUInt( 9 )
+
+        -- Max value of 255, 8 bits
+    local pitchPercent = net.ReadUInt( 8 )
+
+    -- Max value of 100, 7 bits
+    local volume = net.ReadUInt( 7 )
     if volume == 0 then return end
-
+    -- Sent as a UInt to save space(maybe?), but is actually a float between 0-1
     volume = volume / 100
 
-    local channel = net.ReadInt()
+        -- Min value of -1, max value of 136, 9 bits
+    local channel = net.ReadInt( 9 )
 
-    playSoundFor( weapon, soundName, soundLevel, pitchPercent, volume, channel )
+    playSoundFor( originWeapon, soundName, soundLevel, pitchPercent, volume, channel )
 end
 
 net.Receive( hookNameBase .. "_OnWeaponSound", receiveWeaponSound )
