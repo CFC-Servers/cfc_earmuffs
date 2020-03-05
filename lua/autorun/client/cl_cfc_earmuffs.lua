@@ -132,7 +132,7 @@ hook.Add( "PlayerSwitchWeapon", weaponSwitchHook, function( ply, oldWep, newWep 
     end
 end )
 
-local function playSoundFor(weapon, soundName, soundLevel, pitchPercent, volume, channel)
+local function playSoundFor(originWeapon, soundName, soundLevel, pitchPercent, volume, channel)
     volume = volume or 1
 
     print("Received Weapon sound from Server ('" .. soundName .. "'), adjusting as follows: ")
@@ -141,7 +141,7 @@ local function playSoundFor(weapon, soundName, soundLevel, pitchPercent, volume,
 
     print( "Changing volume from '" .. tostring( volume )  .. "' to '" .. tostring( newVolume )  .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")" )
 
-    weapon:EmitSound(soundName, soundLevel, pitchPercent, newVolume, channel)
+    originWeapon:EmitSound(soundName, soundLevel, pitchPercent, newVolume, channel)
 end
 
 local function receiveWeaponSound()
@@ -182,7 +182,7 @@ local function receiveDefaultWeaponSound()
 
     local soundName = net.ReadString()
 
-    playSoundFor( weapon, soundName )
+    playSoundFor( originWeapon, soundName )
 end
 
 net.Receive( hookNameBase .. "_OnDefaultWeaponSound", receiveDefaultWeaponSound )
