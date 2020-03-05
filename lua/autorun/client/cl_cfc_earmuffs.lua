@@ -1,17 +1,17 @@
 local isImpactSound = {
-    "dirt.bulletimpact",
-    "concrete.bulletimpact",
-    "tile.bulletimpact",
-    "solidmetal.bulletimpact",
-    "drywall.impacthard",
-    "flesh.bulletimpact",
-    "wood.bulletimpact"
+    ["dirt.bulletimpact"] = true,
+    ["concrete.bulletimpact"] = true,
+    ["tile.bulletimpact"] = true,
+    ["solidmetal.bulletimpact"] = true,
+    ["drywall.impacthard"] = true,
+    ["flesh.bulletimpact"] = true,
+    ["wood.bulletimpact"] = true
 }
 
 local isShellSound = {
-    "player/pl_shell1.wav",
-    "player/pl_shell2.wav",
-    "player/pl_shell3.wav"
+    ["player/pl_shell1.wav"] = true,
+    ["player/pl_shell2.wav"] = true,
+    ["player/pl_shell3.wav"] = true
 }
 
 local function isCombatSound( soundData )
@@ -67,26 +67,33 @@ end
 --    "ambient/machines/train_horn_2.wav",
 --    "ambient/misc/carhonk1.wav",
 
-
-local hookName = "CFC_CombatEarmuffs"
+local hookNameBase = "CFC_Earmuffs"
+local emitSoundHook = hookNameBase .. "_OnEmitSound"
+local menuOptionHook = hookNameBase .. "_CombatVolumeMenu"
+local weaponSwitchHook = hookNameBase .. "_OnWeaponSwitch"
 
 local combatSoundVolumeMult = 0.2
 
 -- TODO: Store this result in a var and use pvp change hooks
 local function isInBuild()
-    return LocalPlayer():GetNWBool( "CFC_PvP_Mode", false )
+    return not LocalPlayer():GetNWBool( "CFC_PvP_Mode", false )
+end
+
+local function modifyCombatSound( volume )
+    return volume * combatSoundVolumeMult
 end
 
 local function shouldPlayCombatSound( soundData )
     if not isCombatSound( soundData ) then return end
 
-    local plyInBuild = isInBuild()
+    --local plyInBuild = isInBuild()
+    -- TODO: Set this back to funtion call
+    local plyInBuild = true
 
     if plyInBuild then
         print( "Received combat sound ('" .. soundData.SoundName .. "'), adjusting as follows: " )
 
-        local volume = soundData.Volume
-        local newVolume = volume * combatSoundVolumeMult
+        local newVolume = modifyCombatSound( soundData.Volume )
 
         print( "Changing volume from '" .. tostring( volume )  .. "' to '" .. tostring( newVolume )  .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")" )
         soundData.Volume = newVolume
@@ -95,12 +102,10 @@ local function shouldPlayCombatSound( soundData )
     end
 end
 
-hook.Remove( "EntityEmitSound", hookName )
 hook.Add( "EntityEmitSound", hookName, shouldPlayCombatSound )
 
-hook.Remove( "PopulateToolMenu", "CFC_CombatVolumeMenu" )
-hook.Add( "PopulateToolMenu", "CFC_CombatVolumeMenu", function()
-    spawnmenu.AddToolMenuOption( "Utilities", "CFC", "Sound Control", "Sound Control", "", "", function( panel )
+hook.Add( "PopulateToolMenu", menuOptionHook, function()
+    spawnmenu.AddToolMenuOption( "Options", "CFC", "Sound Control", "Sound Control", "", "", function( panel )
         panel:ClearControls()
 
         local CombatSoundSlider = vgui.Create( "DNumSlider", panel )
@@ -115,8 +120,7 @@ hook.Add( "PopulateToolMenu", "CFC_CombatVolumeMenu", function()
     end )
 end )
 
-
-hook.Add( "PlayerSwitchWeapon", hookName .. "_weaponSwitch", function( ply, oldWep, newWep )
+hook.Add( "PlayerSwitchWeapon", weaponSwitchHook, function( ply, oldWep, newWep )
     if not ( IsValid( newWep ) ) then return end
 
     if ( newWep.Primary ) then
@@ -127,3 +131,51 @@ hook.Add( "PlayerSwitchWeapon", hookName .. "_weaponSwitch", function( ply, oldW
         newWep.Secondary.SoundLevel = combatSoundVolumeMult * 80
     end
 end )
+
+local function playSoundFor(weapon, soundName, soundLevel, pitchPercent, volume, channel)
+    volume = volume or 1
+
+    print("Received Weapon sound from Server ('" .. soundName .. "'), adjusting as follows: ")
+
+    local newVolume = modifyCombatSound(volume)
+
+    print( "Changing volume from '" .. tostring( volume )  .. "' to '" .. tostring( newVolume )  .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")" )
+
+    weapon:EmitSound(soundName, soundLevel, pitchPercent, newVolume, channel)
+end
+
+local function receiveWeaponSound()
+    if combatSoundVolumeMult == 0 then return end
+
+    local originWeapon = net.ReadEntity()
+    if not originWeapon or not IsValid( originWeapon ) then return end
+
+    local soundName = net.ReadString()
+    local soundLevel = net.ReadUInt()
+    local pitchPercent = net.ReadUInt()
+
+    -- Sent as a UInt to save space(maybe?), but is actually a float between 0-1
+    local volume = net.ReadUInt()
+    if volume == 0 then return end
+
+    volume = volume / 100
+
+    local channel = net.ReadInt()
+
+    playSoundFor( weapon, soundName, soundLevel, pitchPercent, volume, channel )
+end
+
+net.Receive( hookNameBase .. "_OnWeaponSound", receiveWeaponSound )
+
+local function receiveDefaultWeaponSound()
+    if combatSoundVolumeMult == 0 then return end
+
+    local originWeapon = net.ReadEntity()
+    if not originWeapon or not IsValid( originWeapon ) then return end
+
+    local soundName = net.ReadString()
+
+    playSoundFor( weapon, soundName )
+end
+
+net.Receive( hookNameBase .. "_OnDefaultWeaponSound", receiveDefaultWeaponSound )
