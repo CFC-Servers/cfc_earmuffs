@@ -17,7 +17,7 @@ local EMIT_INTERVAL = engine.TickInterval() * 10
 
 function weaponMeta:EmitSound( soundName, soundLevel, pitchPercent, volume, channel )
     -- Only allow emitting every EMIT_INTERVAL
-    if self.NextSoundEmitTime and SysTime() > self.NextSoundEmitTime then return end
+    if self.NextSoundEmitTime and self.NextSoundEmitTime > SysTime() then return end
 
     local usesDefaults = true
 
@@ -38,6 +38,7 @@ function weaponMeta:EmitSound( soundName, soundLevel, pitchPercent, volume, chan
     end
 
     local weaponPos = self:GetPos()
+    local weaponClass = self:GetClass()
 
     local unreliable = true
 
@@ -45,6 +46,7 @@ function weaponMeta:EmitSound( soundName, soundLevel, pitchPercent, volume, chan
 
     -- If no additional values are given, we won't send anything more than is necessary
     if usesDefaults then
+        print("Sending CFC_Earmuffs_OnDefaultWeaponSound for '" .. weaponClass .. "'")
         net.Start( "CFC_Earmuffs_OnDefaultWeaponSound", unreliable )
             net.WriteEntity( self )
             net.WriteString( soundName )
@@ -60,6 +62,7 @@ function weaponMeta:EmitSound( soundName, soundLevel, pitchPercent, volume, chan
     channel = channel or emitSoundDefaults.channel
 
     net.Start( "CFC_Earmuffs_OnWeaponSound", unreliable )
+        print("Sending CFC_Earmuffs_OnWeaponSound for '" .. weaponClass .. "'")
         net.WriteEntity( self )
 
         net.WriteString( soundName )
@@ -78,6 +81,5 @@ function weaponMeta:EmitSound( soundName, soundLevel, pitchPercent, volume, chan
 
         -- Min value of -1, max value of 136, 9 bits
         net.WriteInt( channel, 9 )
-
     net.SendPAS( weaponPos )
 end
