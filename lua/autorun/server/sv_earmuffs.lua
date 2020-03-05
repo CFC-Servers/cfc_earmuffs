@@ -7,7 +7,7 @@ local weaponMeta = FindMetaTable( "Weapon" )
 -- local weaponEmitSound = entityMeta.EmitSound
 
 local emitSoundDefaults = {}
-emitSoundefaults.soundLevel = 75
+emitSoundDefaults.soundLevel = 75
 emitSoundDefaults.pitchPercent = 100
 emitSoundDefaults.volume = 1
 emitSoundDefaults.channel = CHAN_AUTO
