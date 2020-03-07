@@ -79,9 +79,13 @@ local function isInBuild()
     return not LocalPlayer():GetNWBool( "CFC_PvP_Mode", false )
 end
 
-local function modifyCombatSound( volume )
+local function modifyCombatVolume( volume )
     -- If no sound is provided, just assume 0.2 (default is 1 so we're being quieter by default)
     return (volume or 0.2) * combatSoundVolumeMult
+end
+
+local function modifyCombatSoundLevel( soundLevel )
+    return (soundLevel or 75) * combatSoundVolumeMult
 end
 
 local function shouldPlayCombatSound( soundData )
@@ -93,13 +97,13 @@ local function shouldPlayCombatSound( soundData )
 
     if plyInBuild then
         local soundVolume = soundData.Volume
+        local soundLevel = soundData.SoundLevel
 
-        print( "Received combat sound ('" .. soundData.SoundName .. "'), adjusting as follows: " )
+        local newVolume = modifyCombatVolume( soundVolume )
+        local newSoundLevel = modifyCombatSoundLevel( soundLevel )
 
-        local newVolume = modifyCombatSound( soundVolume )
-
-        print( "Changing volume from '" .. tostring( soundVolume )  .. "' to '" .. tostring( newVolume )  .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")" )
         soundData.Volume = newVolume
+        soundData.SoundLevel = newSoundLevel
 
         return true
     end
@@ -136,13 +140,10 @@ hook.Add( "PlayerSwitchWeapon", weaponSwitchHook, function( ply, oldWep, newWep 
 end )
 
 local function playSoundFor(originEnt, soundName, soundLevel, pitchPercent, volume, channel)
-    print("Received Entity sound from Server ('" .. soundName .. "'), adjusting as follows: ")
+    local newVolume = modifyCombatVolume( volume )
+    local newSoundLevel = modifyCombatSoundLevel( soundLevel )
 
-    local newVolume = modifyCombatSound(volume)
-
-    print( "Changing volume from '" .. tostring( volume )  .. "' to '" .. tostring( newVolume )  .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")" )
-
-    originEnt:EmitSound(soundName, soundLevel, pitchPercent, newVolume, channel)
+    originEnt:EmitSound(soundName, newSoundLevel, pitchPercent, newVolume, channel)
 end
 
 local function receiveWeaponSound()
