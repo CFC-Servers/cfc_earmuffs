@@ -1,18 +1,22 @@
 util.AddNetworkString( "CFC_Earmuffs_OnHL2SwepSound" )
 
--- Used to limit how far away the Hl2 weapons are heard from
-local MAX_EMIT_SOUND_LEVEL = 75
-
 -- Every 10 ticks
 local EMIT_INTERVAL = engine.TickInterval() * 10
 
 local hl2CombatSounds = {
     ["Weapon_SMG1.Single"] = true,
     ["Weapon_AR2.Single"] = true,
+    ["Weapon_357.Single"] = true,
     ["Weapon_SMG1.Double"] = true,
+    ["Weapon_IRifle.Single"] = true,
+    ["Weapon_CombineGuard.Special1"] = true,
+    ["Weapon_Crossbow.BoltElectrify"] = true,
+    ["Weapon_Crossbow.BoltHitWorld"] = true,
+    ["Weapon_Crossbow.BoltFly"] = true,
     ["BaseCombatCharacter.AmmoPickup"] = true,
     ["NPC_CombineBall.Launch"] = true,
     ["NPC_CombineBall.Explosion"] = true,
+    ["NPC_CombineBall.Impact"] = true,
     ["Grenade.Blip"] = true,
     ["physics/metal/weapon_impact_hard1.wav"] = true,         -- SLAM hitting the ground
     ["physics/metal/weapon_impact_hard2.wav"] = true,         -- SLAM hitting the ground
