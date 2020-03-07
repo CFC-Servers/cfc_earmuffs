@@ -75,7 +75,10 @@ local function handleHL2SwepSound( soundData )
 
     local soundName = soundData.SoundName
     local originEnt = soundData.Entity
-    local soundPos = soundData.Pos
+
+    if not IsValid( originEnt ) then return end
+
+    local soundPos = soundData.Pos or originEnt:GetPos()
 
     if shouldThrottleSoundForEnt( soundName, originEnt ) then return end
 
