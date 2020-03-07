@@ -80,7 +80,8 @@ local function isInBuild()
 end
 
 local function modifyCombatSound( volume )
-    return volume * combatSoundVolumeMult
+    -- If no sound is provided, just assume 0.2 (default is 1 so we're being quieter by default)
+    return (volume or 0.2) * combatSoundVolumeMult
 end
 
 local function shouldPlayCombatSound( soundData )
@@ -91,11 +92,13 @@ local function shouldPlayCombatSound( soundData )
     local plyInBuild = true
 
     if plyInBuild then
+        local soundVolume = soundData.Volume
+
         print( "Received combat sound ('" .. soundData.SoundName .. "'), adjusting as follows: " )
 
-        local newVolume = modifyCombatSound( soundData.Volume )
+        local newVolume = modifyCombatSound( soundVolume )
 
-        print( "Changing volume from '" .. tostring( volume )  .. "' to '" .. tostring( newVolume )  .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")" )
+        print( "Changing volume from '" .. tostring( soundVolume )  .. "' to '" .. tostring( newVolume )  .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")" )
         soundData.Volume = newVolume
 
         return true
@@ -132,16 +135,16 @@ hook.Add( "PlayerSwitchWeapon", weaponSwitchHook, function( ply, oldWep, newWep 
     end
 end )
 
-local function playSoundFor(originWeapon, soundName, soundLevel, pitchPercent, volume, channel)
+local function playSoundFor(originEnt, soundName, soundLevel, pitchPercent, volume, channel)
     volume = volume or 1
 
-    print("Received Weapon sound from Server ('" .. soundName .. "'), adjusting as follows: ")
+    print("Received Entity sound from Server ('" .. soundName .. "'), adjusting as follows: ")
 
     local newVolume = modifyCombatSound(volume)
 
     print( "Changing volume from '" .. tostring( volume )  .. "' to '" .. tostring( newVolume )  .. "' (Sound multiplier at: " .. tostring( combatSoundVolumeMult ) .. ")" )
 
-    originWeapon:EmitSound(soundName, soundLevel, pitchPercent, newVolume, channel)
+    originEnt:EmitSound(soundName, soundLevel, pitchPercent, newVolume, channel)
 end
 
 local function receiveWeaponSound()
@@ -170,7 +173,6 @@ local function receiveWeaponSound()
 
     playSoundFor( originWeapon, soundName, soundLevel, pitchPercent, volume, channel )
 end
-
 net.Receive( hookNameBase .. "_OnWeaponSound", receiveWeaponSound )
 
 local function receiveDefaultWeaponSound()
@@ -184,5 +186,15 @@ local function receiveDefaultWeaponSound()
 
     playSoundFor( originWeapon, soundName )
 end
-
 net.Receive( hookNameBase .. "_OnDefaultWeaponSound", receiveDefaultWeaponSound )
+
+local function receiveHL2SwepSound()
+    if combatSoundVolumeMult == 0 then return end
+
+    local soundName = net.ReadString()
+    local originEnt = net.ReadEntity()
+    local soundLevel = 75 -- Force all HL2 SWEPs to be sound level of 75
+
+    playSoundFor( originEnt, soundName, soundLevel )
+end
+net.Receive( hookNameBase .. "_OnHL2SwepSound", receiveHL2SwepSound )
