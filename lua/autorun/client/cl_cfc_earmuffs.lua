@@ -136,8 +136,6 @@ hook.Add( "PlayerSwitchWeapon", weaponSwitchHook, function( ply, oldWep, newWep 
 end )
 
 local function playSoundFor(originEnt, soundName, soundLevel, pitchPercent, volume, channel)
-    volume = volume or 1
-
     print("Received Entity sound from Server ('" .. soundName .. "'), adjusting as follows: ")
 
     local newVolume = modifyCombatSound(volume)
