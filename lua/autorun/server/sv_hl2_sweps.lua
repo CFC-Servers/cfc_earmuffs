@@ -1,3 +1,5 @@
+util.AddNetworkString( "CFC_Earmuffs_OnHL2SwepSound" )
+
 -- Used to limit how far away the Hl2 weapons are heard from
 local MAX_EMIT_SOUND_LEVEL = 75
 
