@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 local settings = CFCEarmuffs.Settings
 
 hook.Add( "PopulateToolMenu", "CFC_Earmuffs_PopulateToolMenu", function()

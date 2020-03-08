@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 CFCEarmuffs = CFCEarmuffs or {}
 CFCEarmuffs.Config = CFCEarmuffs.Config or {}
 
