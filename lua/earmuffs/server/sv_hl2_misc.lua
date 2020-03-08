@@ -10,7 +10,8 @@ local hl2CombatSounds = {
 local utils = CFCEarmuffs.Utils
 
 local function isHL2Misc( soundData )
-    local soundName = utils.CleanSoundName( soundData.OriginalSoundName )
+    local maintainCase = true
+    local soundName = utils.CleanSoundName( soundData.OriginalSoundName, maintainCase )
 
     if hl2CombatSounds[soundName] then return true end
 end
