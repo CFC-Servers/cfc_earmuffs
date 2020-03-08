@@ -43,6 +43,9 @@ end
 
 -- Used in tool menu to update settings
 function CFCEarmuffs.Settings:ReceivePreferenceUpdate( settingName, settingValue )
+    -- Tool menu sends us 0-100, we want 0-1
+    settingValue = settingValue / 100
+
     logger:debug( "Received a preference update. '" .. settingName .. "' set to '" .. settingValue .. "'" )
 
     -- Queue it for persistent storage update
