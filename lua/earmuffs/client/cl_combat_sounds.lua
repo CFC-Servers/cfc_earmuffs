@@ -4,6 +4,7 @@ local logger = CFCEarmuffs.logger
 local utils = CFCEarmuffs.Utils
 
 local isImpactSound = {
+    ["default.bulletimpact"] = true,
     ["dirt.bulletimpact"] = true,
     ["concrete.bulletimpact"] = true,
     ["tile.bulletimpact"] = true,
