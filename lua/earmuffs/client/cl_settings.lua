@@ -28,6 +28,8 @@ timer.Create( CFCEarmuffs.Settings.updateSettingsTimer, 0.5, 0, function()
 end )
 
 CFCEarmuffs.Settings.SavePreferences = function( preferences )
+    logger:debug( "Saving preferences to persistant storage" )
+
     for settingName, settingValue in pairs( preferences ) do
         -- TODO: Check valid setting name
 
@@ -41,6 +43,8 @@ end
 
 -- Used in tool menu to update settings
 function CFCEarmuffs.Settings:ReceivePreferenceUpdate( settingName, settingValue )
+    logger:debug( "Received a preference update. '" .. settingName .. "' set to '" .. settingValue .. "'" )
+
     -- Queue it for persistent storage update
     self.pendingSettingsUpdate[settingName] = settingValue
 

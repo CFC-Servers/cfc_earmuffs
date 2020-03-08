@@ -1,5 +1,6 @@
 AddCSLuaFile()
 
+local logger = CFCEarmuffs.logger
 local utils = CFCEarmuffs.Utils
 
 local isImpactSound = {
@@ -40,6 +41,8 @@ end
 local function shouldPlayCombatSound( soundData )
     if not isCombatSound( soundData ) then return end
 
+    logger:debug( "Received Combat Sound!" )
+
     local soundVolume = soundData.Volume
     local soundLevel = soundData.SoundLevel
 
@@ -53,3 +56,5 @@ local function shouldPlayCombatSound( soundData )
 end
 
 hook.Add( "EntityEmitSound", "CFC_Earmuffs_OnCombatSound", shouldPlayCombatSound )
+
+logger:debug( "Combat Sound module loaded" )
