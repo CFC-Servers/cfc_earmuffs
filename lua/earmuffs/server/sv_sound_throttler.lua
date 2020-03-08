@@ -5,7 +5,7 @@ CFCEarmuffs.SoundThrottler = CFCEarmuffs.SoundThrottler or {}
 CFCEarmuffs.SoundThrottler.Throttle = {}
 
 CFCEarmuffs.SoundThrottler.throttleSoundForEnt = function( soundName, originEnt )
-    local nextSoundPlay = SysTime() + EMIT_INTERVAL
+    local nextSoundPlay = SysTime() + CFCEarmuffs.Config.ENT_EMIT_INTERVAL
 
     CFCEarmuffs.SoundThrottler.Throttle[originEnt] = CFCEarmuffs.SoundThrottler.Throttle[originEnt] or {}
     CFCEarmuffs.SoundThrottler.Throttle[originEnt][soundName] = nextSoundPlay
