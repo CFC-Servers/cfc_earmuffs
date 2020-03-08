@@ -29,3 +29,5 @@ if CLIENT then
     include( "earmuffs/client/cl_combat_sounds.lua" )
     include( "earmuffs/client/cl_sweps.lua" )
 end
+
+CFCEarmuffs.logger:log( "Loaded!" )
