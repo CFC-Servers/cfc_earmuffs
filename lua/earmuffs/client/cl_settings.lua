@@ -70,7 +70,7 @@ local function initialSetup()
 
     CFCEarmuffs.Settings.CombatVolumeMult = combatVolumeMult
 
-    hook.Remove( "Think", setupHookName )
+    hook.Remove( "Think", "CFC_Earmuffs_ClientSetup" )
 end
 
 hook.Add( "Think", "CFC_Earmuffs_ClientSetup", initialSetup )
