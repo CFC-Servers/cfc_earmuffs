@@ -1,5 +1,7 @@
 AddCSLuaFile()
 
+local logger = CFCEarmuffs.logger
+
 hook.Add( "PlayerSwitchWeapon", "CFC_Earmuffs_OnPlayerSwitchWeapon", function( ply, oldWep, newWep )
     if not ( IsValid( newWep ) ) then return end
 
@@ -13,3 +15,5 @@ hook.Add( "PlayerSwitchWeapon", "CFC_Earmuffs_OnPlayerSwitchWeapon", function( p
         newWep.Secondary.SoundLevel = multiplier * 100
     end
 end )
+
+logger:debug( "SWEPS module loaded" )
