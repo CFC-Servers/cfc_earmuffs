@@ -22,4 +22,4 @@ local function handleHL2MiscSound( soundData )
     return utils.broadcastEntityEmitSound( soundData )
 end
 
-hook.Add( "EntityEmitSound", "CFC_Earmuffs_OnHL2MiscSound", handleHL2MiscSount )
+hook.Add( "EntityEmitSound", "CFC_Earmuffs_OnHL2MiscSound", handleHL2MiscSound )
