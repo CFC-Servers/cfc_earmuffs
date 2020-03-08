@@ -1,8 +1,6 @@
 local settings = CFCEarmuffs.Settings
 
-local menuOptionHook = "CFC_Earmuffs_VolumeMenu"
-
-hook.Add( "PopulateToolMenu", menuOptionHook, function()
+hook.Add( "PopulateToolMenu", "CFC_Earmuffs_PopulateToolMenu", function()
     spawnmenu.AddToolMenuOption( "Options", "CFC", "Sound Control", "Sound Control", "", "", function( panel )
         panel:ClearControls()
 
@@ -15,10 +13,7 @@ hook.Add( "PopulateToolMenu", menuOptionHook, function()
         CombatSoundSlider:SetDecimals( 0 )
         CombatSoundSlider:SetValue( settings[settingName] * 100 )
         CombatSoundSlider.OnValueChanged = function( _, newValue )
-            settings.pendingSettingsUpdate[settingName] = newValue
-
-            -- Start, or restart if already running
-            timer.Start( settings.updateSettingsTimer )
+            settings:ReceivePreferenceUpdate( settingName, newValue )
         end
     end )
 end )
