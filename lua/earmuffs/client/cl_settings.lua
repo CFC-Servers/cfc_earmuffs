@@ -27,7 +27,7 @@ timer.Create( CFCEarmuffs.Settings.updateSettingsTimer, 0.5, 0, function()
     timer.Stop( CFCEarmuffs.Settings.updateSettingsTimer )
 end )
 
-CFCEarmuffs.Settings.savePreferences = function( preferences )
+CFCEarmuffs.Settings.SavePreferences = function( preferences )
     for settingName, settingValue in pairs( preferences ) do
         -- TODO: Check valid setting name
 
