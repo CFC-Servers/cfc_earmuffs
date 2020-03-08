@@ -31,7 +31,7 @@ CFCEarmuffs.Settings.savePreferences = function( preferences )
 
         settingValue = tostring( settingValue )
 
-        logger.debug( "Setting '" .. settingName .. "' to '" .. settingValue .. "'")
+        logger:debug( "Setting '" .. settingName .. "' to '" .. settingValue .. "'")
 
         cookie.Set( settingName, settingValue )
     end
@@ -50,14 +50,14 @@ function CFCEarmuffs.Settings:ReceivePreferenceUpdate( settingName, settingValue
 end
 
 local function initialSetup()
-    logger.info( "Initializing Preferences" )
+    logger:info( "Initializing Preferences" )
 
     for settingShortcode, settingName in pairs( SETTINGS_NAMES ) do
         local defaultValue = settingsDefaults[settingShortcode]
         local cookieValue = cookie.GetString( settingName, defaultValue )
         cookieValue = tonumber( cookieValue )
 
-        logger.debug( "Loaded preference '" .. settingShortcode .. "', value read as '" .. cookieValue .. "'" )
+        logger:debug( "Loaded preference '" .. settingShortcode .. "', value read as '" .. cookieValue .. "'" )
 
         CFCEarmuffs.Settings[settingShortcode] = cookieValue
     end
