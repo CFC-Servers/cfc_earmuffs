@@ -20,18 +20,19 @@ CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
 end
 
 CFCEarmuffs.Utils.modifyCombatVolume = function( soundVolume )
-    return ( soundVolume or 0.2 ) * CFCEarmuffs.Settings.CombatVolumeMult
+    return soundVolume * CFCEarmuffs.Settings.CombatVolumeMult
 end
 
 CFCEarmuffs.Utils.modifyCombatSoundLevel = function( soundLevel )
-    return ( soundLevel or 75 ) * CFCEarmuffs.Settings.CombatVolumeMult
+    return soundLevel * CFCEarmuffs.Settings.CombatVolumeMult
 end
 
-function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, pitchPercent, volume, channel)
+function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, soundPitch, volume, soundChannel, soundFlags)
     local newVolume = self.modifyCombatVolume( volume )
     local newSoundLevel = self.modifyCombatSoundLevel( soundLevel )
 
-    originEnt:EmitSound( soundName, newSoundLevel, pitchPercent, newVolume, channel )
+    EmitSound( soundName, originEnt:GetPos(), originEnt:EntIndex(), soundChannel, newVolume, newSoundLevel, soundFlags, soundPitch )
+    --originEnt:EmitSound( soundName, newSoundLevel, pitchPercent, newVolume, channel )
 end
 
 if CLIENT then
@@ -46,9 +47,10 @@ if CLIENT then
         local soundChannel = net.ReadUInt( 9 )
         local soundPitch = net.ReadUInt( 8 )
         local soundLevel = net.ReadUInt( 9 )
+        local soundFlags = net.ReadUInt( 11 )
         local soundVolume = net.ReadFloat()
 
-        self:PlaySoundFor( originEnt, soundName, soundLevel, soundPitch, soundVolume, soundChannel )
+        self:PlaySoundFor( originEnt, soundName, soundLevel, soundPitch, soundVolume, soundChannel, soundFlags )
     end
 end
 
@@ -62,9 +64,12 @@ if SERVER then
         local soundPitch = soundData.Pitch or 100
         local soundLevel = soundData.SoundLevel or 75
         local soundVolume = soundData.Volume or 1
+        local soundFlags = soundData.Flags or 0
 
         if not IsValid( originEnt ) then return end
-        if CFCEarmuffs.SoundThrottler.shouldThrottleSoundForEnt( soundName, originEnt ) then return false end
+        if CFCEarmuffs.SoundThrottler.shouldThrottleSoundForEnt( soundName, originEnt ) then
+            CFCEarmuffs.logger:debug("Discarding throttled sound: '" .. soundName .. "'")
+        end
 
         local unreliable = true
 
@@ -80,6 +85,8 @@ if SERVER then
 
             -- Min: 0, Max: 511, 9 bits
             net.WriteUInt( soundLevel, 9 )
+
+            net.WriteUInt( soundFlags, 11 )
 
             net.WriteFloat( soundVolume )
         net.SendPAS( soundPos )
