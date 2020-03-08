@@ -2,6 +2,7 @@ util.AddNetworkString( "CFC_Earmuffs_OnWeaponSound" )
 util.AddNetworkString( "CFC_Earmuffs_OnDefaultWeaponSound" )
 
 local config = CFCEarmuffs.Config
+local utils = CFCEarmuffs.Utils
 
 local weaponMeta = FindMetaTable( "Weapon" )
 
