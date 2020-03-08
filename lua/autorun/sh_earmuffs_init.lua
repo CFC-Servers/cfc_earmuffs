@@ -30,4 +30,4 @@ if CLIENT then
     include( "earmuffs/client/cl_sweps.lua" )
 end
 
-CFCEarmuffs.logger:log( "Loaded!" )
+CFCEarmuffs.logger:info( "Loaded!" )
