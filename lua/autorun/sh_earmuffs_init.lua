@@ -9,6 +9,7 @@ if SERVER then
     AddCSLuaFile( "earmuffs/client/cl_networked_sounds.lua" )
     AddCSLuaFile( "earmuffs/client/cl_combat_sounds.lua" )
     AddCSLuaFile( "earmuffs/client/cl_sweps.lua" )
+    AddCSLuaFile( "earmuffs/client/cl_tool_menu.lua" )
 end
 
 include( "earmuffs/shared/sh_logger.lua" )
@@ -28,6 +29,7 @@ if CLIENT then
     include( "earmuffs/client/cl_networked_sounds.lua" )
     include( "earmuffs/client/cl_combat_sounds.lua" )
     include( "earmuffs/client/cl_sweps.lua" )
+    include( "earmuffs/client/cl_tool_menu.lua" )
 end
 
 CFCEarmuffs.logger:info( "Loaded!" )
