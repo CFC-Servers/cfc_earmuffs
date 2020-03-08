@@ -3,7 +3,7 @@ CFCEarmuffs.Utils = CFCEarmuffs.Utils or {}
 
 local settings = CFCEarmuffs.Settings
 
-CFCEarmuffs.Utils.cleanSoundName = function( soundName, maintainCase )
+CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
     soundName = string.Replace( soundName, ")", "" )
     soundName = string.Replace( soundName, "^", "" )
     soundName = string.Replace( soundName, "<", "" )
