@@ -30,8 +30,8 @@ end )
 CFCEarmuffs.Settings.SavePreferences = function( preferences )
     logger:debug( "Saving preferences to persistant storage" )
 
-    for settingName, settingValue in pairs( preferences ) do
-        -- TODO: Check valid setting name
+    for settingShortcode, settingValue in pairs( preferences ) do
+        local settingName = CFCEarmuffs.Settings.settingNames[settingShortcode]
 
         settingValue = tostring( settingValue )
 
@@ -67,12 +67,6 @@ local function initialSetup()
 
         CFCEarmuffs.Settings[settingShortcode] = cookieValue
     end
-
-    local combatVolumeMult = cookie.GetString( SETTINGS_NAMES.CombatVolumeMult, "0.2" )
-
-    combatVolumeMult = tonumber( combatVolumeMult )
-
-    CFCEarmuffs.Settings.CombatVolumeMult = combatVolumeMult
 
     hook.Remove( "Think", "CFC_Earmuffs_ClientSetup" )
 end

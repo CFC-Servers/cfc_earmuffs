@@ -3,8 +3,6 @@ AddCSLuaFile()
 CFCEarmuffs = CFCEarmuffs or {}
 CFCEarmuffs.Utils = CFCEarmuffs.Utils or {}
 
-local settings = CFCEarmuffs.Settings
-
 CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
     soundName = string.Replace( soundName, ")", "" )
     soundName = string.Replace( soundName, "^", "" )
@@ -18,11 +16,11 @@ CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
 end
 
 CFCEarmuffs.Utils.modifyCombatVolume = function( soundVolume )
-    return ( soundVolume or 0.2 ) * settings.CombatVolumeMult
+    return ( soundVolume or 0.2 ) * CFCEarmuffs.Settings.CombatVolumeMult
 end
 
 CFCEarmuffs.Utils.modifyCombatSoundLevel = function( soundLevel )
-    return ( soundLevel or 75 ) * settings.CombatVolumeMult
+    return ( soundLevel or 75 ) * CFCEarmuffs.Settings.CombatVolumeMult
 end
 
 function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, pitchPercent, volume, channel)
