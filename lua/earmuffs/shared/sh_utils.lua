@@ -71,8 +71,10 @@ if SERVER then
         local soundFlags = soundData.Flags or 0
 
         if not IsValid( originEnt ) then return end
+
         if CFCEarmuffs.SoundThrottler.shouldThrottleSoundForEnt( soundName, originEnt ) then
             CFCEarmuffs.logger:debug("Discarding throttled sound: '" .. soundName .. "'")
+            return false
         end
 
         local unreliable = true
