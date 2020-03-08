@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 hook.Add( "PlayerSwitchWeapon", "CFC_Earmuffs_OnPlayerSwitchWeapon", function( ply, oldWep, newWep )
     if not ( IsValid( newWep ) ) then return end
 

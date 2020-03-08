@@ -1,3 +1,4 @@
+AddCSLuaFile()
 require( "cfclogger" )
 
 CFCEarmuffs = CFCEarmuffs or {}

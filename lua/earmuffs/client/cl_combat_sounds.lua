@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 local utils = CFCEarmuffs.Utils
 
 local isImpactSound = {
