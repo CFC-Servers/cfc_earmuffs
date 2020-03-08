@@ -5,11 +5,13 @@ CFCEarmuffs.Settings = CFCEarmuffs.Settings or {}
 local logger = CFCEarmuffs.logger
 
 local SETTINGS_DEFAULTS = {
-    CombatVolumeMult = 0.2
+    CombatVolumeMult = 0.2,
+    CombatSoundLevelMult = 0.2
 }
 
 local SETTINGS_NAMES = {
-    CombatVolumeMult = "CFC_Earmuffs_CombatVolumeMult"
+    CombatVolumeMult = "CFC_Earmuffs_CombatVolumeMult",
+    CombatSoundLevelMult = "CFC_Earmuffs_CombatSoundLevelMult"
 }
 
 CFCEarmuffs.Settings.settingNames = SETTINGS_NAMES
@@ -53,7 +55,7 @@ local function initialSetup()
     logger:info( "Initializing Preferences" )
 
     for settingShortcode, settingName in pairs( SETTINGS_NAMES ) do
-        local defaultValue = settingsDefaults[settingShortcode]
+        local defaultValue = SETTINGS_DEFAULTS[settingShortcode]
         local cookieValue = cookie.GetString( settingName, defaultValue )
         cookieValue = tonumber( cookieValue )
 
