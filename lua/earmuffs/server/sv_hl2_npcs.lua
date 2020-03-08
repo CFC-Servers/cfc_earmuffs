@@ -1,5 +1,3 @@
-util.AddNetworkString( "CFC_Earmuffs_OnHL2NPCSound" )
-
 local hl2NPCs = {
     antlion = true,
     antlion_guard = true,
@@ -31,7 +29,7 @@ end
 
 local utils = CFCEarmuffs.Utils
 
-hook.Add( "OnEntityEmitSound", "CFC_Earmuffs_OnHL2NPC", function( soundData )
+hook.Add( "EntityEmitSound", "CFC_Earmuffs_OnHL2NPC", function( soundData )
     if not isHL2NPCSound( soundData.SoundName ) then return end
 
     return utils.broadcastEntityEmitSound( soundData )
