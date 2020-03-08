@@ -10,10 +10,10 @@ function weaponMeta:EmitSound( soundName, soundLevel, soundPitch, soundVolume, s
     local soundData = {
         SoundName = soundName,
         Entity = self,
-        SoundLevel = soundLevel,
-        Pitch = soundPitch,
-        Volume = soundVolume,
-        Channel = soundChannel
+        SoundLevel = soundLevel or 50,
+        Pitch = soundPitch or 100,
+        Volume = soundVolume or 0.5,
+        Channel = soundChannel or CHAN_WEAPON
     }
 
     utils.broadcastEntityEmitSound( soundData )
