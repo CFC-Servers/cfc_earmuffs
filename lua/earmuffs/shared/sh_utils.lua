@@ -53,7 +53,6 @@ if CLIENT then
 end
 
 if SERVER then
-    local throttler = CFCEarmuffs.SoundThrottler
 
     CFCEarmuffs.Utils.broadcastEntityEmitSound = function( soundData )
         local soundName = soundData.SoundName
@@ -65,7 +64,7 @@ if SERVER then
         local soundVolume = soundData.Volume
 
         if not IsValid( originEnt ) then return end
-        if throttler.shouldThrottleSoundForEnt( soundName, originEnt ) then return false end
+        if CFCEarmuffs.SoundThrottler.shouldThrottleSoundForEnt( soundName, originEnt ) then return false end
 
         local unreliable = true
 
@@ -85,7 +84,7 @@ if SERVER then
             net.WriteFloat( soundVolume )
         net.SendPAS( soundPos )
 
-        throttler.throttleSoundForEnt( soundName, originEnt )
+        CFCEarmuffs.SoundThrottler.throttleSoundForEnt( soundName, originEnt )
 
         return false
     end
