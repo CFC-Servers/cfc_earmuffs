@@ -44,6 +44,8 @@ local function shouldPlayCombatSound( soundData )
 
     logger:debug( "Received Combat Sound!" )
 
+    if CFCEarmuffs.Settings.CombatVolumeMult == 0 then return false end
+
     local soundVolume = soundData.Volume
     local soundLevel = soundData.SoundLevel
 
