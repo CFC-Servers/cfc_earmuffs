@@ -30,7 +30,8 @@ end
 local utils = CFCEarmuffs.Utils
 
 hook.Add( "EntityEmitSound", "CFC_Earmuffs_OnHL2NPC", function( soundData )
-    if not isHL2NPCSound( soundData.SoundName ) then return end
+    local cleanName = utils.CleanSoundName( soundData.SoundName )
+    if not isHL2NPCSound( cleanName ) then return end
 
     return utils.broadcastEntityEmitSound( soundData )
 end )

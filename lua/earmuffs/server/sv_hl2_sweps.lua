@@ -3,6 +3,7 @@ util.AddNetworkString( "CFC_Earmuffs_OnHL2SwepSound" )
 local utils = CFCEarmuffs.Utils
 
 local hl2Sweps = {
+    ar1 = true,
     ar2 = true,
     bugbait = true,
     cguard = true, -- Combine balls?
@@ -27,7 +28,9 @@ local genericWeaponSounds = {
 
 local function isHL2Swep( soundData )
     local nameSpl = utils.CleanSoundName( soundData.SoundName )
-    if nameSpl[1] ~= "weapon" then return false end
+    nameSpl = string.Split( nameSpl, "/" )
+
+    if nameSpl[1] ~= "weapons" then return false end
 
     local weaponName = nameSpl[2]
     if hl2Sweps[weaponName] then return true end
