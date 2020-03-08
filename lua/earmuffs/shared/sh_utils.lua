@@ -44,9 +44,7 @@ if CLIENT then
         local soundName = net.ReadString()
         local originEnt = net.ReadEntity()
 
-        if originEnt:IsWeapon() then
-            if originEnt:GetOwner() == LocalPlayer() then return end
-        end
+        if originEnt:IsWeapon() and originEnt:GetOwner() == LocalPlayer() then return end
 
         local soundChannel = net.ReadUInt( 9 )
         local soundPitch = net.ReadUInt( 8 )
