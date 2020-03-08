@@ -20,11 +20,16 @@ CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
 end
 
 CFCEarmuffs.Utils.modifyCombatVolume = function( soundVolume )
-    return soundVolume * CFCEarmuffs.Settings.CombatVolumeMult
+    local newVolume = soundVolume * CFCEarmuffs.Settings.CombatVolumeMult
+    CFCEarmuffs.logger:debug("Received volume: '" .. soundVolume .. "' augmenting it with multiplier ('" .. CFCEarmuffs.Settings.CombatVolumeMult .. "') to receive '" .. newVolume .. "'")
+
+    return newVolume
 end
 
 CFCEarmuffs.Utils.modifyCombatSoundLevel = function( soundLevel )
-    return soundLevel * CFCEarmuffs.Settings.CombatVolumeMult
+    local newSoundLevel = soundLevel * CFCEarmuffs.Settings.CombatVolumeMult
+
+    return newSoundLevel
 end
 
 function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, soundPitch, volume, soundChannel, soundFlags)
@@ -32,7 +37,6 @@ function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, soundP
     local newSoundLevel = self.modifyCombatSoundLevel( soundLevel )
 
     EmitSound( soundName, originEnt:GetPos(), originEnt:EntIndex(), soundChannel, newVolume, newSoundLevel, soundFlags, soundPitch )
-    --originEnt:EmitSound( soundName, newSoundLevel, pitchPercent, newVolume, channel )
 end
 
 if CLIENT then
