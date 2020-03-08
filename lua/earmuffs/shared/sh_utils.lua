@@ -43,9 +43,9 @@ if CLIENT then
             if originEnt:GetOwner() == LocalPlayer() then return end
         end
 
-        local soundChannel = net.ReadUInt()
-        local soundPitch = net.ReadUInt()
-        local soundLevel = net.ReadUInt()
+        local soundChannel = net.ReadUInt( 9 )
+        local soundPitch = net.ReadUInt( 8 )
+        local soundLevel = net.ReadUInt( 9 )
         local soundVolume = net.ReadFloat()
 
         self:PlaySoundFor( originEnt, soundName, soundLevel, soundPitch, soundVolume, soundChannel )
