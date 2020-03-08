@@ -3,6 +3,8 @@ AddCSLuaFile()
 CFCEarmuffs = CFCEarmuffs or {}
 CFCEarmuffs.Utils = CFCEarmuffs.Utils or {}
 
+util.AddNetworkString( "CFC_Earmuffs_OnEntityEmitSound" )
+
 CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
     soundName = string.Replace( soundName, ")", "" )
     soundName = string.Replace( soundName, "^", "" )
