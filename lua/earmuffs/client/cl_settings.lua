@@ -10,7 +10,7 @@ local SETTINGS_NAMES = {
     CombatVolumeMult = "CFC_Earmuffs_CombatVolumeMult"
 }
 
-CFCEarmuffs.Settings.settingNames = settingNames
+CFCEarmuffs.Settings.settingNames = SETTINGS_NAMES
 
 CFCEarmuffs.Settings.pendingSettingsUpdate = {}
 
@@ -23,7 +23,7 @@ timer.Create( CFCEarmuffs.Settings.updateSettingsTimer, 0.5, 0, function()
     timer.Stop( CFCEarmuffs.Settings.updateSettingsTimer )
 end )
 
-local function savePreferences( preferences )
+CFCEarmuffs.Settings.savePreferences = function( preferences )
     for settingName, settingValue in pairs( preferences ) do
         -- TODO: Check valid setting name
 
@@ -35,10 +35,17 @@ local function savePreferences( preferences )
     end
 end
 
-CFCEarmuffs.Settings.savePreferences = savePreferences
+-- Used in tool menu to update settings
+function CFCEarmuffs.Settings:ReceivePreferenceUpdate( settingName, settingValue )
+    -- Queue it for persistent storage update
+    self.pendingSettingsUpdate[settingName] = settingValue
 
+    -- Start, or restart if already running
+    timer.Start( self.updateSettingsTimer )
 
-local setupHookName = "CFC_Earmuffs_ClientSetup"
+    -- Update in-memory value immediately
+    self[settingName] = settingValue
+end
 
 local function initialSetup()
     logger.info( "Initializing Preferences" )
@@ -53,7 +60,7 @@ local function initialSetup()
         CFCEarmuffs.Settings[settingShortcode] = cookieValue
     end
 
-    local combatVolumeMult = cookie.GetString(settingNames.CombatVolumeMult, tostring( DEFAULT_COMBAT_VOLUME_MULT ) )
+    local combatVolumeMult = cookie.GetString( SETTINGS_NAMES.CombatVolumeMult, "0.2" )
 
     combatVolumeMult = tonumber( combatVolumeMult )
 
@@ -61,4 +68,5 @@ local function initialSetup()
 
     hook.Remove( "Think", setupHookName )
 end
-hook.Add( "Think", setupHookName, initialSetup )
+
+hook.Add( "Think", "CFC_Earmuffs_ClientSetup", initialSetup )
