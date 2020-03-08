@@ -58,10 +58,10 @@ if SERVER then
         local soundName = soundData.SoundName
         local originEnt = soundData.Entity
         local soundPos = soundData.Pos or originEnt:GetPos()
-        local soundChannel = soundData.Channel
-        local soundPitch = soundData.Pitch
-        local soundLevel = soundData.SoundLevel
-        local soundVolume = soundData.Volume
+        local soundChannel = soundData.Channel or CHAN_AUTO
+        local soundPitch = soundData.Pitch or 100
+        local soundLevel = soundData.SoundLevel or 75
+        local soundVolume = soundData.Volume or 1
 
         if not IsValid( originEnt ) then return end
         if CFCEarmuffs.SoundThrottler.shouldThrottleSoundForEnt( soundName, originEnt ) then return false end
