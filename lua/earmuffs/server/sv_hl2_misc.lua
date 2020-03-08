@@ -1,5 +1,6 @@
 local hl2CombatSounds = {
     -- Misc
+    ["Flesh.BulletImpact"] = true,
     ["Player.Death"] = true,
     ["Player.FallDamage"] = true,
     ["BaseCombatCharacter.AmmoPickup"] = true,
@@ -9,7 +10,7 @@ local hl2CombatSounds = {
 local utils = CFCEarmuffs.Utils
 
 local function isHL2Misc( soundData )
-    local soundName = soundData.OriginalSoundName
+    local soundName = utils.CleanSoundName( soundData.OriginalSoundName )
 
     if hl2CombatSounds[soundName] then return true end
 end
