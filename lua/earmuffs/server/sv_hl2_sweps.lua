@@ -1,5 +1,3 @@
-util.AddNetworkString( "CFC_Earmuffs_OnHL2SwepSound" )
-
 local utils = CFCEarmuffs.Utils
 
 local hl2Sweps = {
