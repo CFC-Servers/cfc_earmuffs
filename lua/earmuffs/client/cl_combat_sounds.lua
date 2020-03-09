@@ -27,6 +27,7 @@ local function isCombatSound( soundData )
     if string.StartWith( soundName, "npc" ) then return true end
     if string.StartWith( soundName, "ambient/explosions" ) then return true end
     if string.StartWith( soundName, "cw" ) then return true end
+    if string.StartWith( soundName, "gdc/rockets" ) then return true end
 
     local originalName = utils.CleanSoundName( soundData.OriginalSoundName )
 
