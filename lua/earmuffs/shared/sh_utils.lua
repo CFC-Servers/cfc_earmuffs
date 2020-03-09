@@ -12,6 +12,12 @@ CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
     soundName = string.Replace( soundName, "^", "" )
     soundName = string.Replace( soundName, "<", "" )
 
+    -- Leading slash for some reason
+    if soundName[1] == "/" then
+        -- Get everything after the leading slash
+        soundName = string.Right( soundName, string.len( soundName ) - 1 )
+    end
+
     if not maintainCase then
         soundName = string.lower( soundName )
     end
