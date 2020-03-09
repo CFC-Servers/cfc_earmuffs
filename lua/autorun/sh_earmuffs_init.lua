@@ -22,6 +22,7 @@ if SERVER then
     include( "earmuffs/server/sv_hl2_sweps.lua" )
     include( "earmuffs/server/sv_hl2_npcs.lua" )
     include( "earmuffs/server/sv_hl2_misc.lua" )
+    include( "earmuffs/server/sv_m9k_sweps.lua" )
 end
 
 if CLIENT then
