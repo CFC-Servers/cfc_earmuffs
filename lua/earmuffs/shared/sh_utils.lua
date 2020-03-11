@@ -39,6 +39,8 @@ CFCEarmuffs.Utils.modifyCombatSoundLevel = function( soundLevel )
 end
 
 function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, soundPitch, volume, soundChannel, soundFlags)
+    if not IsValid( originEnt ) then return end
+
     local newVolume = self.modifyCombatVolume( volume )
     local newSoundLevel = self.modifyCombatSoundLevel( soundLevel )
 
