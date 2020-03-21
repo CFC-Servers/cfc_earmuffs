@@ -125,7 +125,7 @@ if SERVER then
             net.WriteUInt( soundFlags, 11 )
 
             net.WriteFloat( soundVolume )
-        net.SendPAS( recipientFilter )
+        net.SendPAS( recipientFilter:GetPlayers() )
 
         CFCEarmuffs.SoundThrottler.throttleSoundForEnt( soundName, originEnt )
 
