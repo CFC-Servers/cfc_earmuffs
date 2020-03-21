@@ -65,6 +65,22 @@ if CLIENT then
 end
 
 if SERVER then
+    
+    local function findSoundTriggerer( soundData )
+        local originEnt = soundData.Entity
+        
+        if originEnt:IsPlayer() then return originEnt end
+        
+        local owner = originEnt:GetOwner()
+        local hasValidOwner = IsValid( owner ) and owner:IsPlayer()
+        if hasValidOwner then return owner end
+        
+        local cppiOwner = originEnt:CPPIGetOwner()
+        local hasValidCPPIOwner = IsValid( cppiOwner ) and cppiOwner:IsPlayer()
+        if hasValidCPPIOwner then return cppiOwner end
+        
+        -- TODO: What now?
+   end
 
     CFCEarmuffs.Utils.broadcastEntityEmitSound = function( soundData )
         local soundName = soundData.SoundName
@@ -84,6 +100,14 @@ if SERVER then
         end
 
         local unreliable = true
+        
+        local soundTriggerer = findSoundTriggerer( soundData )
+        local recipientFilter = RecipientFilter()
+        recipientFilter:AddPas()
+        
+        if soundTrigger then
+            recipientFilter:RemovePlayer( soundTriggerer )
+        end
 
         net.Start( "CFC_Earmuffs_OnEntityEmitSound", unreliable )
             net.WriteString( soundName )
@@ -101,7 +125,7 @@ if SERVER then
             net.WriteUInt( soundFlags, 11 )
 
             net.WriteFloat( soundVolume )
-        net.SendPAS( soundPos )
+        net.SendPAS( recipientFilter )
 
         CFCEarmuffs.SoundThrottler.throttleSoundForEnt( soundName, originEnt )
 
