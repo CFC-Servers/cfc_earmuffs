@@ -65,20 +65,20 @@ if CLIENT then
 end
 
 if SERVER then
-    
+
     local function findSoundTriggerer( soundData )
         local originEnt = soundData.Entity
-        
+
         if originEnt:IsPlayer() then return originEnt end
-        
+
         local owner = originEnt:GetOwner()
         local hasValidOwner = IsValid( owner ) and owner:IsPlayer()
         if hasValidOwner then return owner end
-        
+
         local cppiOwner = originEnt:CPPIGetOwner()
         local hasValidCPPIOwner = IsValid( cppiOwner ) and cppiOwner:IsPlayer()
         if hasValidCPPIOwner then return cppiOwner end
-        
+
         -- TODO: What now?
    end
 
@@ -100,11 +100,11 @@ if SERVER then
         end
 
         local unreliable = true
-        
+
         local soundTriggerer = findSoundTriggerer( soundData )
         local recipientFilter = RecipientFilter()
         recipientFilter:AddPas( soundPos )
-        
+
         if soundTrigger then
             recipientFilter:RemovePlayer( soundTriggerer )
         end
