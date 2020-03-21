@@ -103,7 +103,7 @@ if SERVER then
 
         local soundTriggerer = findSoundTriggerer( soundData )
         local recipientFilter = RecipientFilter()
-        recipientFilter:AddPas( soundPos )
+        recipientFilter:AddPAS( soundPos )
 
         if soundTrigger then
             recipientFilter:RemovePlayer( soundTriggerer )
