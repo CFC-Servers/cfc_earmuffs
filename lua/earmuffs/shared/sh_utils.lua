@@ -105,7 +105,7 @@ if SERVER then
         local recipientFilter = RecipientFilter()
         recipientFilter:AddPAS( soundPos )
 
-        if soundTrigger then
+        if soundTriggerer then
             recipientFilter:RemovePlayer( soundTriggerer )
         end
 
