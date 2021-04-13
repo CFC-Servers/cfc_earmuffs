@@ -1,18 +1,23 @@
 local utils = CFCEarmuffs.Utils
 
+local rawget = rawget
+local CleanSoundName = utils.CleanSoundName
+local broadcastEntityEmitSound = utils.broadcastEntityEmitSound
+local stringSplit = string.Split
+
 -- Sweps with extra sounds we need to network
 local miscSweps = {
     ins2rpg7 = true
 }
 
 local function isMiscSwepSound( soundData )
-    local nameSpl = utils.CleanSoundName( soundData.SoundName )
-    nameSpl = string.Split( nameSpl, "/" )
+    local nameSpl = CleanSoundName( soundData.SoundName )
+    nameSpl = stringSplit( nameSpl, "/" )
 
     if nameSpl[1] ~= "weapons" then return false end
 
     local weaponName = nameSpl[2]
-    if miscSweps[weaponName] then return true end
+    if rawget(miscSweps, weaponName) then return true end
 
     return false
 end
@@ -20,7 +25,7 @@ end
 local function handleMiscSwepSound( soundData )
     if not isMiscSwepSound( soundData ) then return end
 
-    return utils.broadcastEntityEmitSound( soundData )
+    return broadcastEntityEmitSound( soundData )
 end
 
 hook.Add( "EntityEmitSound", "CFC_Earmuffs_OnMiscSwepSound", handleMiscSwepSound )

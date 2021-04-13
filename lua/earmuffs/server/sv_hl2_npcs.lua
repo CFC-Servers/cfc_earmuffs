@@ -1,3 +1,6 @@
+local rawget = rawget
+local stringSplit = string.Split
+
 local hl2NPCs = {
     antlion = true,
     antlion_guard = true,
@@ -18,20 +21,21 @@ local hl2NPCs = {
 }
 
 local function isHL2NPCSound( soundName )
-    local spl = string.Split( soundName, "/" )
+    local spl = stringSplit( soundName, "/" )
 
     if spl[1] ~= "npc" then return end
 
     local npcType = spl[2]
 
-    if hl2NPCs[npcType] then return true end
+    if rawget( hl2NPCs, npcType ) then return true end
 end
 
-local utils = CFCEarmuffs.Utils
+local CleanSoundName = CFCEarmuffs.Utils.CleanSoundName
+local broadcastEntityEmitSound = CFCEarmuffs.Utils.broadcastEntityEmitSound
 
 hook.Add( "EntityEmitSound", "CFC_Earmuffs_OnHL2NPC", function( soundData )
-    local cleanName = utils.CleanSoundName( soundData.SoundName )
+    local cleanName = CleanSoundName( rawget( soundData, SoundName ) )
     if not isHL2NPCSound( cleanName ) then return end
 
-    return utils.broadcastEntityEmitSound( soundData )
+    return broadcastEntityEmitSound( soundData )
 end )
