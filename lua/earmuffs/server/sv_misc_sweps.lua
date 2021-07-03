@@ -5,14 +5,18 @@ local miscSweps = {
     ins2rpg7 = true
 }
 
+local Split = string.Split
+local CleanSoundName = utils.CleanSoundName
+local broadcastEntityEmitSound = utils.broadcastEntityEmitSound
+
 local function isMiscSwepSound( soundData )
-    local nameSpl = utils.CleanSoundName( soundData.SoundName )
-    nameSpl = string.Split( nameSpl, "/" )
+    local nameSpl = CleanSoundName( soundData.SoundName )
+    nameSpl = Split( nameSpl, "/" )
 
-    if nameSpl[1] ~= "weapons" then return false end
+    if rawget( nameSpl, 1 ) ~= "weapons" then return false end
 
-    local weaponName = nameSpl[2]
-    if miscSweps[weaponName] then return true end
+    local weaponName = rawget( nameSpl, 2 )
+    if rawget( miscSweps, weaponName ) then return true end
 
     return false
 end
@@ -20,7 +24,7 @@ end
 local function handleMiscSwepSound( soundData )
     if not isMiscSwepSound( soundData ) then return end
 
-    return utils.broadcastEntityEmitSound( soundData )
+    return broadcastEntityEmitSound( soundData )
 end
 
 hook.Add( "EntityEmitSound", "CFC_Earmuffs_OnMiscSwepSound", handleMiscSwepSound )

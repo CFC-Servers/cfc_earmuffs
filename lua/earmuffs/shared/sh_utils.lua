@@ -3,41 +3,57 @@ AddCSLuaFile()
 CFCEarmuffs = CFCEarmuffs or {}
 CFCEarmuffs.Utils = CFCEarmuffs.Utils or {}
 
+local stringReplace = string.Replace
+local stringRight = string.Right
+local stringLen = string.len
+local stringLower = string.lower
+
+local IsValid = IsValid
+
+local Settings = CFCEarmuffs.Settings
+local Logger = CFCEarmuffs.logger
+
 if SERVER then
     util.AddNetworkString( "CFC_Earmuffs_OnEntityEmitSound" )
 end
 
 CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
-    soundName = string.Replace( soundName, ")", "" )
-    soundName = string.Replace( soundName, "^", "" )
-    soundName = string.Replace( soundName, "<", "" )
+    soundName = stringReplace( soundName, ")", "" )
+    soundName = stringReplace( soundName, "^", "" )
+    soundName = stringReplace( soundName, "<", "" )
 
     -- Leading slash for some reason
     if soundName[1] == "/" then
         -- Get everything after the leading slash
-        soundName = string.Right( soundName, string.len( soundName ) - 1 )
+        soundName = stringRight( soundName, stringLen( soundName ) - 1 )
     end
 
     if not maintainCase then
-        soundName = string.lower( soundName )
+        soundName = stringLower( soundName )
     end
 
     return soundName
 end
 
+
 CFCEarmuffs.Utils.modifyCombatVolume = function( soundVolume )
-    local newVolume = soundVolume * CFCEarmuffs.Settings.CombatVolumeMult
-    CFCEarmuffs.logger:debug("Received volume: '" .. soundVolume .. "' augmenting it with multiplier ('" .. CFCEarmuffs.Settings.CombatVolumeMult .. "') to receive '" .. newVolume .. "'")
+    local mult = rawget( Settings, "CombatVolumeMult" )
+    local newVolume = soundVolume * mult
+
+    Logger:debug(
+        "Received volume: '" .. soundVolume .. "' augmenting it with multiplier ('" .. mult .. "') to receive '" .. newVolume .. "'"
+    )
 
     return newVolume
 end
 
 CFCEarmuffs.Utils.modifyCombatSoundLevel = function( soundLevel )
-    local newSoundLevel = soundLevel * CFCEarmuffs.Settings.CombatVolumeMult
+    local newSoundLevel = soundLevel * rawget( Settings, "CombatVolumeMult" )
 
     return newSoundLevel
 end
 
+local modifyCombatSoundLevel = CFCEarmuffs.Utils.modifyCombatSoundLevel
 function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, soundPitch, volume, soundChannel, soundFlags)
     if not IsValid( originEnt ) then return end
 
@@ -48,23 +64,35 @@ function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, soundP
 end
 
 if CLIENT then
+    local LocalPlayer = LocalPlayer
+
+    local ReadUInt = net.ReadUInt
+    local ReadString = net.ReadString
+    local ReadEntity = net.ReadEntity
+    local ReadFloat = net.ReadFloat
+
     function CFCEarmuffs.Utils:ReceiveEmitSound()
-        local soundName = net.ReadString()
-        local originEnt = net.ReadEntity()
+        local soundName = ReadString()
+        local originEnt = ReadEntity()
 
         if originEnt:IsWeapon() and originEnt:GetOwner() == LocalPlayer() then return end
 
-        local soundChannel = net.ReadUInt( 9 )
-        local soundPitch = net.ReadUInt( 8 )
-        local soundLevel = net.ReadUInt( 9 )
-        local soundFlags = net.ReadUInt( 11 )
-        local soundVolume = net.ReadFloat()
+        local soundChannel = ReadUInt( 9 )
+        local soundPitch = ReadUInt( 8 )
+        local soundLevel = ReadUInt( 9 )
+        local soundFlags = ReadUInt( 11 )
+        local soundVolume = ReadFloat()
 
         self:PlaySoundFor( originEnt, soundName, soundLevel, soundPitch, soundVolume, soundChannel, soundFlags )
     end
 end
 
 if SERVER then
+
+    local WriteString = net.WriteString
+    local WriteEntity = net.WriteEntity
+    local WriteUInt = net.WriteUInt
+    local writeFloat = net.WriteFloat
 
     local function findSoundTriggerer( soundData )
         local originEnt = soundData.Entity
@@ -82,53 +110,56 @@ if SERVER then
         -- TODO: What now?
    end
 
-    CFCEarmuffs.Utils.broadcastEntityEmitSound = function( soundData )
-        local soundName = soundData.SoundName
-        local originEnt = soundData.Entity
-        local soundPos = soundData.Pos or originEnt:GetPos()
-        local soundChannel = soundData.Channel or CHAN_AUTO
-        local soundPitch = soundData.Pitch or 100
-        local soundLevel = soundData.SoundLevel or 75
-        local soundVolume = soundData.Volume or 1
-        local soundFlags = soundData.Flags or 0
+   local shouldThrottleSoundForEnt = CFCEarmuffs.SoundThrottler.shouldThrottleSoundForEnt
+   local throttleSoundForEnt = CFCEarmuffs.SoundThrottler.throttleSoundForEnt
 
-        if not IsValid( originEnt ) then return end
+   CFCEarmuffs.Utils.broadcastEntityEmitSound = function( soundData )
+       local soundName = rawget( soundData, "SoundName" )
+       local originEnt = rawget( soundData, "Entity" )
+       local soundPos = rawget( soundData, "Pos" ) or originEnt:GetPos()
+       local soundChannel = rawget( soundData, "Channel" ) or CHAN_AUTO
+       local soundPitch = rawget( soundData, "Pitch" ) or 100
+       local soundLevel = rawget( soundData, "SoundLevel" ) or 75
+       local soundVolume = rawget( soundData, "Volume" ) or 1
+       local soundFlags = rawget( soundData, "Flags" ) or 0
 
-        if CFCEarmuffs.SoundThrottler.shouldThrottleSoundForEnt( soundName, originEnt ) then
-            CFCEarmuffs.logger:debug("Discarding throttled sound: '" .. soundName .. "'")
-            return false
-        end
+       if not IsValid( originEnt ) then return end
 
-        local unreliable = true
+       if shouldThrottleSoundForEnt( soundName, originEnt ) then
+           Logger:debug("Discarding throttled sound: '" .. soundName .. "'")
+           return false
+       end
 
-        local soundTriggerer = findSoundTriggerer( soundData )
-        local recipientFilter = RecipientFilter()
-        recipientFilter:AddPAS( soundPos )
+       local unreliable = true
 
-        if soundTriggerer then
-            recipientFilter:RemovePlayer( soundTriggerer )
-        end
+       local soundTriggerer = findSoundTriggerer( soundData )
+       local recipientFilter = RecipientFilter()
+       recipientFilter:AddPAS( soundPos )
 
-        net.Start( "CFC_Earmuffs_OnEntityEmitSound", unreliable )
-            net.WriteString( soundName )
-            net.WriteEntity( originEnt )
+       if soundTriggerer then
+           recipientFilter:RemovePlayer( soundTriggerer )
+       end
 
-            -- Min: -1, Max: 136. 9 bits
-            net.WriteUInt( soundChannel, 9 )
+       net.Start( "CFC_Earmuffs_OnEntityEmitSound", unreliable )
+           WriteString( soundName )
+           WriteEntity( originEnt )
 
-            -- Min: 0, Max: 255, 8 bits
-            net.WriteUInt( soundPitch, 8 )
+           -- Min: -1, Max: 136. 9 bits
+           WriteUInt( soundChannel, 9 )
 
-            -- Min: 0, Max: 511, 9 bits
-            net.WriteUInt( soundLevel, 9 )
+           -- Min: 0, Max: 255, 8 bits
+           WriteUInt( soundPitch, 8 )
 
-            net.WriteUInt( soundFlags, 11 )
+           -- Min: 0, Max: 511, 9 bits
+           WriteUInt( soundLevel, 9 )
 
-            net.WriteFloat( soundVolume )
-        net.Send( recipientFilter:GetPlayers() )
+           WriteUInt( soundFlags, 11 )
 
-        CFCEarmuffs.SoundThrottler.throttleSoundForEnt( soundName, originEnt )
+           WriteFloat( soundVolume )
+       net.Send( recipientFilter:GetPlayers() )
 
-        return false
-    end
+       throttleSoundForEnt( soundName, originEnt )
+
+       return false
+   end
 end

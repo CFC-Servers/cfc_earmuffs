@@ -24,15 +24,21 @@ local genericWeaponSounds = {
     ["debris2.wav"] = true
 }
 
+local rawget = rawget
+local Split = string.Split
+local CleanSoundName = utils.CleanSoundName
+local broadcastEntityEmitSound = utils.broadcastEntityEmitSound
+
 local function isHL2Swep( soundData )
-    local nameSpl = utils.CleanSoundName( soundData.SoundName )
-    nameSpl = string.Split( nameSpl, "/" )
+    local nameSpl = CleanSoundName( soundData.SoundName )
+    nameSpl = Split( nameSpl, "/" )
 
-    if nameSpl[1] ~= "weapons" then return false end
+    if rawget( nameSpl, 1 ) ~= "weapons" then return false end
 
-    local weaponName = nameSpl[2]
-    if hl2Sweps[weaponName] then return true end
-    if genericWeaponSounds[weaponName] then return true end
+    local weaponName = rawget( nameSpl, 2 )
+
+    if rawget( hl2Sweps, weaponName ) then return true end
+    if rawget( genericWeaponSounds, weaponName ) then return true end
 
     return false
 end
@@ -40,7 +46,7 @@ end
 local function handleHL2SwepSound( soundData )
     if not isHL2Swep( soundData ) then return end
 
-    return utils.broadcastEntityEmitSound( soundData )
+    return broadcastEntityEmitSound( soundData )
 end
 
 hook.Add( "EntityEmitSound", "CFC_Earmuffs_OnHL2SwepSound", handleHL2SwepSound )

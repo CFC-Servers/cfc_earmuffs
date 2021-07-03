@@ -1,13 +1,15 @@
 AddCSLuaFile()
 
 local logger = CFCEarmuffs.logger
+local settings = CFCEarmuffs.Settings
+local utils = CFCEarmuffs.Utils
 
 local function receiveNetworkedSound()
     logger:debug( "Received networked sound!" )
 
-    if CFCEarmuffs.Settings.CombatVolumeMult == 0 then return end
+    if settings.CombatVolumeMult == 0 then return end
 
-    CFCEarmuffs.Utils:ReceiveEmitSound()
+    utils:ReceiveEmitSound()
 end
 
 net.Receive( "CFC_Earmuffs_OnEntityEmitSound", receiveNetworkedSound )
