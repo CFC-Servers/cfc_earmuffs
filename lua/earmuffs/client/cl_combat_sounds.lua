@@ -1,7 +1,12 @@
 AddCSLuaFile()
 
+local rawget = rawget
+
 local logger = CFCEarmuffs.logger
 local utils = CFCEarmuffs.Utils
+local settings = CFCEarmuffs.Settings
+local StartWith = string.StartWith
+local CleanSoundName = utils.CleanSoundName
 
 local isImpactSound = {
     ["default.bulletimpact"] = true,
@@ -20,39 +25,43 @@ local isShellSound = {
     ["player/pl_shell3.wav"] = true
 }
 
+
 local function isCombatSound( soundData )
-    local soundName = utils.CleanSoundName( soundData.SoundName )
+    local soundName = CleanSoundName( soundData.SoundName )
 
-    if string.StartWith( soundName, "weapon" ) then return true end
-    if string.StartWith( soundName, "npc" ) then return true end
-    if string.StartWith( soundName, "ambient/explosions" ) then return true end
-    if string.StartWith( soundName, "cw" ) then return true end
-    if string.StartWith( soundName, "acf" ) then return true end
-    if string.StartWith( soundName, "gdc/rockets" ) then return true end
+    if StartWith( soundName, "weapon" ) then return true end
+    if StartWith( soundName, "npc" ) then return true end
+    if StartWith( soundName, "ambient/explosions" ) then return true end
+    if StartWith( soundName, "cw" ) then return true end
+    if StartWith( soundName, "acf" ) then return true end
+    if StartWith( soundName, "gdc/rockets" ) then return true end
 
-    local originalName = utils.CleanSoundName( soundData.OriginalSoundName )
+    local originalName = CleanSoundName( soundData.OriginalSoundName )
 
-    if string.StartWith( originalName, "weapon" ) then return true end
-    if string.StartWith( originalName, "flesh" ) then return true end
-    if string.StartWith( originalName, "metal" ) then return true end
-    if string.StartWith( originalName, "cw_" ) then return true end
+    if StartWith( originalName, "weapon" ) then return true end
+    if StartWith( originalName, "flesh" ) then return true end
+    if StartWith( originalName, "metal" ) then return true end
+    if StartWith( originalName, "cw_" ) then return true end
 
-    if isImpactSound[originalName] then return true end
-    if isShellSound[soundName] then return true end
+    if rawget( isImpactSound, originalName ) then return true end
+    if rawget( isShellSound, soundName ) then return true end
 end
+
+local modifyCombatVolume = utils.modifyCombatVolume
+local modifyCombatSoundLevel = utils.modifyCombatSoundLevel
 
 local function shouldPlayCombatSound( soundData )
     if not isCombatSound( soundData ) then return end
 
     logger:debug( "Received Combat Sound!" )
 
-    if CFCEarmuffs.Settings.CombatVolumeMult == 0 then return false end
+    if settings.CombatVolumeMult == 0 then return false end
 
     local soundVolume = soundData.Volume
     local soundLevel = soundData.SoundLevel
 
-    local newVolume = utils.modifyCombatVolume( soundVolume )
-    local newSoundLevel = utils.modifyCombatSoundLevel( soundLevel )
+    local newVolume = modifyCombatVolume( soundVolume )
+    local newSoundLevel = modifyCombatSoundLevel( soundLevel )
 
     soundData.Volume = newVolume
     soundData.SoundLevel = newSoundLevel

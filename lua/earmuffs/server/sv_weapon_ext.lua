@@ -2,8 +2,9 @@ util.AddNetworkString( "CFC_Earmuffs_OnWeaponSound" )
 util.AddNetworkString( "CFC_Earmuffs_OnDefaultWeaponSound" )
 
 local utils = CFCEarmuffs.Utils
-
 local weaponMeta = FindMetaTable( "Weapon" )
+local broadcastEntityEmitSound = utils.broadcastEntityEmitSound
+local CHAN_WEAPON = CHAN_WEAPON
 
 function weaponMeta:EmitSound( soundName, soundLevel, soundPitch, soundVolume, soundChannel )
     local soundData = {
@@ -15,5 +16,5 @@ function weaponMeta:EmitSound( soundName, soundLevel, soundPitch, soundVolume, s
         Channel = soundChannel or CHAN_WEAPON
     }
 
-    utils.broadcastEntityEmitSound( soundData )
+    broadcastEntityEmitSound( soundData )
 end
