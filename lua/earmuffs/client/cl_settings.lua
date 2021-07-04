@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 CFCEarmuffs = CFCEarmuffs or {}
 CFCEarmuffs.Settings = CFCEarmuffs.Settings or {}
-local logger = CFCEarmuffs.logger
+local logger = CFCEarmuffs.Logger
 
 local SETTINGS_DEFAULTS = {
     CombatVolumeMult = 0.2,
