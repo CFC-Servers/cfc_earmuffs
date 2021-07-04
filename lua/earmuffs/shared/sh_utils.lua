@@ -92,7 +92,7 @@ if SERVER then
     local WriteString = net.WriteString
     local WriteEntity = net.WriteEntity
     local WriteUInt = net.WriteUInt
-    local writeFloat = net.WriteFloat
+    local WriteFloat = net.WriteFloat
 
     local function findSoundTriggerer( soundData )
         local originEnt = soundData.Entity
