@@ -45,7 +45,7 @@ local function _isHL2Swep( soundName )
     return false
 end
 
-local function isHL2Swep( soundNamed )
+local function isHL2Swep( soundName )
     local cached = rawget( cache, soundName )
     if cached ~= nil then return cached end
 
