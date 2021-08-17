@@ -36,7 +36,7 @@ end
 
 local function handleMiscSwepSound( soundData )
     local soundName = CleanSoundName( rawget( soundData, "SoundName" ) )
-    if not isMiscSwepSound( soundData ) then return end
+    if not isMiscSwepSound( soundName ) then return end
 
     return broadcastEntityEmitSound( soundData )
 end
