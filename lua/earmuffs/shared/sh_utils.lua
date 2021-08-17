@@ -48,7 +48,7 @@ CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
 end
 
 CFCEarmuffs.Utils.modifyCombatVolume = function( soundVolume )
-    local mult = rawget( Settings, "CombatVolumeMult" )
+    local mult = rawget( Settings, "CombatVolumeMult" ) or 1
     local newVolume = soundVolume * mult
 
     Logger:debug(
