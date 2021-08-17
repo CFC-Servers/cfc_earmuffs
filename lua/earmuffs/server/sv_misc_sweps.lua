@@ -24,7 +24,7 @@ local function _isMiscSwepSound( soundName )
     return false
 end
 
-local function _isMiscSwepSound( soundName )
+local function isMiscSwepSound( soundName )
     local cached = rawget( cache, soundName )
     if cached ~= nil then return cached end
 
