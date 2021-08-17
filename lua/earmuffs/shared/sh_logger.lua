@@ -1,5 +1,5 @@
 AddCSLuaFile()
-require( "cfclogger" )
+require( "logger" )
 
 CFCEarmuffs = CFCEarmuffs or {}
-CFCEarmuffs.logger = CFCLogger( "CFCEarmuffs" )
+CFCEarmuffs.logger = Logger( "CFCEarmuffs" )
