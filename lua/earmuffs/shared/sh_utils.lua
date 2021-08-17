@@ -3,10 +3,14 @@ AddCSLuaFile()
 CFCEarmuffs = CFCEarmuffs or {}
 CFCEarmuffs.Utils = CFCEarmuffs.Utils or {}
 
+local RecipientFilter = RecipientFilter
 local stringReplace = string.Replace
 local stringRight = string.Right
 local stringLen = string.len
 local stringLower = string.lower
+local EmitSound = EmitSound
+local rawget = rawget
+local rawset = rawset
 
 local IsValid = IsValid
 
@@ -17,24 +21,31 @@ if SERVER then
     util.AddNetworkString( "CFC_Earmuffs_OnEntityEmitSound" )
 end
 
+local cleanCache = {}
+
 CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
-    soundName = stringReplace( soundName, ")", "" )
-    soundName = stringReplace( soundName, "^", "" )
-    soundName = stringReplace( soundName, "<", "" )
+    local cached = rawget( cleanCache, soundName )
 
-    -- Leading slash for some reason
-    if soundName[1] == "/" then
-        -- Get everything after the leading slash
-        soundName = stringRight( soundName, stringLen( soundName ) - 1 )
+    if not cached then
+        local cleanSound = soundName
+        cleanSound = stringReplace( cleanSound, ")", "" )
+        cleanSound = stringReplace( cleanSound, "^", "" )
+        cleanSound = stringReplace( cleanSound, "<", "" )
+
+        -- Leading slash for some reason
+        if cleanSound[1] == "/" then
+            -- Get everything after the leading slash
+            cleanSound = stringRight( cleanSound, stringLen( cleanSound ) - 1 )
+        end
+
+        rawset( cleanCache, soundName, cleanSound )
+        cached = cleanSound
     end
 
-    if not maintainCase then
-        soundName = stringLower( soundName )
-    end
+    if maintainCase then return cached end
 
-    return soundName
+    return stringLower( cached )
 end
-
 
 CFCEarmuffs.Utils.modifyCombatVolume = function( soundVolume )
     local mult = rawget( Settings, "CombatVolumeMult" )
@@ -46,22 +57,24 @@ CFCEarmuffs.Utils.modifyCombatVolume = function( soundVolume )
 
     return newVolume
 end
+local modifyCombatVolume = CFCEarmuffs.Utils.modifyCombatVolume
 
 CFCEarmuffs.Utils.modifyCombatSoundLevel = function( soundLevel )
     local newSoundLevel = soundLevel * rawget( Settings, "CombatVolumeMult" )
 
     return newSoundLevel
 end
-
 local modifyCombatSoundLevel = CFCEarmuffs.Utils.modifyCombatSoundLevel
-function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, soundPitch, volume, soundChannel, soundFlags)
+
+function CFCEarmuffs.Utils.PlaySoundFor( originEnt, soundName, soundLevel, soundPitch, volume, soundChannel, soundFlags )
     if not IsValid( originEnt ) then return end
 
-    local newVolume = self.modifyCombatVolume( volume )
-    local newSoundLevel = self.modifyCombatSoundLevel( soundLevel )
+    local newVolume = modifyCombatVolume( volume )
+    local newSoundLevel = modifyCombatSoundLevel( soundLevel )
 
     EmitSound( soundName, originEnt:GetPos(), originEnt:EntIndex(), soundChannel, newVolume, newSoundLevel, soundFlags, soundPitch )
 end
+local playSoundFor = CFCEarmuffs.Utils.PlaySoundFor
 
 if CLIENT then
     local LocalPlayer = LocalPlayer
@@ -71,7 +84,7 @@ if CLIENT then
     local ReadEntity = net.ReadEntity
     local ReadFloat = net.ReadFloat
 
-    function CFCEarmuffs.Utils:ReceiveEmitSound()
+    function CFCEarmuffs.Utils.ReceiveEmitSound()
         local soundName = ReadString()
         local originEnt = ReadEntity()
 
@@ -83,7 +96,7 @@ if CLIENT then
         local soundFlags = ReadUInt( 11 )
         local soundVolume = ReadFloat()
 
-        self:PlaySoundFor( originEnt, soundName, soundLevel, soundPitch, soundVolume, soundChannel, soundFlags )
+        playSoundFor( originEnt, soundName, soundLevel, soundPitch, soundVolume, soundChannel, soundFlags )
     end
 end
 
@@ -93,19 +106,19 @@ if SERVER then
     local WriteEntity = net.WriteEntity
     local WriteUInt = net.WriteUInt
     local WriteFloat = net.WriteFloat
+    local unreliable = true
 
-    local function findSoundTriggerer( soundData )
-        local originEnt = soundData.Entity
-
+    local function findSoundTriggerer( originEnt )
         if originEnt:IsPlayer() then return originEnt end
 
         local owner = originEnt:GetOwner()
         local hasValidOwner = IsValid( owner ) and owner:IsPlayer()
         if hasValidOwner then return owner end
 
-        local cppiOwner = originEnt:CPPIGetOwner()
-        local hasValidCPPIOwner = IsValid( cppiOwner ) and cppiOwner:IsPlayer()
-        if hasValidCPPIOwner then return cppiOwner end
+        return originEnt:CPPIGetOwner()
+        -- local cppiOwner = originEnt:CPPIGetOwner()
+        -- local hasValidCPPIOwner = IsValid( cppiOwner ) and cppiOwner:IsPlayer()
+        -- if hasValidCPPIOwner then return cppiOwner end
 
         -- TODO: What now?
    end
@@ -130,9 +143,7 @@ if SERVER then
            return false
        end
 
-       local unreliable = true
-
-       local soundTriggerer = findSoundTriggerer( soundData )
+       local soundTriggerer = findSoundTriggerer( originEnt )
        local recipientFilter = RecipientFilter()
        recipientFilter:AddPAS( soundPos )
 

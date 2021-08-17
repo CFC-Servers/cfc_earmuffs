@@ -15,9 +15,7 @@ local SETTINGS_NAMES = {
 }
 
 CFCEarmuffs.Settings.settingNames = SETTINGS_NAMES
-
 CFCEarmuffs.Settings.pendingSettingsUpdate = {}
-
 CFCEarmuffs.Settings.updateSettingsTimer = "CFC_Earmuffs_DelayedUpdateSettings"
 
 timer.Create( CFCEarmuffs.Settings.updateSettingsTimer, 0.5, 0, function()

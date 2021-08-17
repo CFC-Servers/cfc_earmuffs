@@ -17,11 +17,15 @@ local hl2NPCs = {
     zombie_poison = true
 }
 
+local rawget = rawget
+local rawset = rawset
 local stringSplit = string.Split
 local CleanSoundName = CFCEarmuffs.Utils.CleanSoundName
 local broadcastEntityEmitSound = CFCEarmuffs.Utils.broadcastEntityEmitSound
 
-local function isHL2NPCSound( soundName )
+local cache = {}
+
+local function _isHL2NPCSound( soundName )
     local spl = stringSplit( soundName, "/" )
 
     if spl[1] ~= "npc" then return end
@@ -29,10 +33,22 @@ local function isHL2NPCSound( soundName )
     local npcType = spl[2]
 
     if rawget( hl2NPCs, npcType ) then return true end
+
+    return false
+end
+
+local function isHL2NPCSound( soundName )
+    local cached = rawget( cache, soundName )
+    if cached ~= nil then return cached end
+
+    local result = _isHL2NPCSound( soundName )
+    rawset( cache, soundName, result )
+
+    return result
 end
 
 hook.Add( "EntityEmitSound", "CFC_Earmuffs_OnHL2NPC", function( soundData )
-    local cleanName = CleanSoundName( soundData.SoundName )
+    local cleanName = CleanSoundName( rawget( soundData, "SoundName" ) )
     if not isHL2NPCSound( cleanName ) then return end
 
     return broadcastEntityEmitSound( soundData )

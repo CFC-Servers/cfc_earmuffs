@@ -25,13 +25,15 @@ local genericWeaponSounds = {
 }
 
 local rawget = rawget
+local rawset = rawset
 local Split = string.Split
 local CleanSoundName = utils.CleanSoundName
 local broadcastEntityEmitSound = utils.broadcastEntityEmitSound
 
-local function isHL2Swep( soundData )
-    local nameSpl = CleanSoundName( soundData.SoundName )
-    nameSpl = Split( nameSpl, "/" )
+local cache = {}
+
+local function _isHL2Swep( soundName )
+    nameSpl = Split( soundName, "/" )
 
     if rawget( nameSpl, 1 ) ~= "weapons" then return false end
 
@@ -43,8 +45,19 @@ local function isHL2Swep( soundData )
     return false
 end
 
+local function isHL2Swep( soundNamed )
+    local cached = rawget( cache, soundName )
+    if cached ~= nil then return cached end
+
+    local result = _isHL2Swep( soundName )
+    rawset( cache, soundName, result )
+
+    return result
+end
+
 local function handleHL2SwepSound( soundData )
-    if not isHL2Swep( soundData ) then return end
+    local soundName = CleanSoundName( rawget( soundData, "SoundName" ) )
+    if not isHL2Swep( soundName ) then return end
 
     return broadcastEntityEmitSound( soundData )
 end

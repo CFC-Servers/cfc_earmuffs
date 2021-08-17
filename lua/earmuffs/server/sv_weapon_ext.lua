@@ -5,9 +5,10 @@ local utils = CFCEarmuffs.Utils
 local weaponMeta = FindMetaTable( "Weapon" )
 local broadcastEntityEmitSound = utils.broadcastEntityEmitSound
 local CHAN_WEAPON = CHAN_WEAPON
+local soundData
 
 function weaponMeta:EmitSound( soundName, soundLevel, soundPitch, soundVolume, soundChannel )
-    local soundData = {
+    soundData = {
         SoundName = soundName,
         Entity = self,
         SoundLevel = soundLevel or 50,

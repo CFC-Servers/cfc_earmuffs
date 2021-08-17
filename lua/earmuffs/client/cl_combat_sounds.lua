@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 local rawget = rawget
+local rawset = rawset
 
 local logger = CFCEarmuffs.logger
 local utils = CFCEarmuffs.Utils
@@ -25,26 +26,50 @@ local isShellSound = {
     ["player/pl_shell3.wav"] = true
 }
 
+local cache = {}
 
-local function isCombatSound( soundData )
-    local soundName = CleanSoundName( soundData.SoundName )
-
+local function _isCombatSoundBasic( soundName )
     if StartWith( soundName, "weapon" ) then return true end
     if StartWith( soundName, "npc" ) then return true end
     if StartWith( soundName, "ambient/explosions" ) then return true end
     if StartWith( soundName, "cw" ) then return true end
     if StartWith( soundName, "acf" ) then return true end
     if StartWith( soundName, "gdc/rockets" ) then return true end
+    if rawget( isShellSound, soundName ) then return true end
 
-    local originalName = CleanSoundName( soundData.OriginalSoundName )
+    return false
+end
 
+local function _isCombatSoundOriginal( soundName )
     if StartWith( originalName, "weapon" ) then return true end
     if StartWith( originalName, "flesh" ) then return true end
     if StartWith( originalName, "metal" ) then return true end
     if StartWith( originalName, "cw_" ) then return true end
+    if rawget( isImpactSound, soundName ) then return true end
 
-    if rawget( isImpactSound, originalName ) then return true end
-    if rawget( isShellSound, soundName ) then return true end
+    return false
+end
+
+local function _isCombatSound( soundName, checker )
+    local cached = rawget( cache, soundName )
+    if cached ~= nil then return cached end
+
+    local result = checker( soundName )
+    rawset( cache, soundName, result )
+
+    return result
+end
+
+local function isCombatSound( soundData )
+    local soundName = rawget( soundData, "SoundName" )
+    local basicResult = _isCombatSound( soundName, _isCombatSoundBasic )
+    if basicResult then return basicResult end
+
+    local soundNameOriginal = rawget( soundData, "OriginalSoundName" )
+    local originalResult = _isCombatSound( soundName, _isCombatSoundOriginal )
+    if originalResult then return originalResult end
+
+    return false
 end
 
 local modifyCombatVolume = utils.modifyCombatVolume
@@ -63,8 +88,8 @@ local function shouldPlayCombatSound( soundData )
     local newVolume = modifyCombatVolume( soundVolume )
     local newSoundLevel = modifyCombatSoundLevel( soundLevel )
 
-    soundData.Volume = newVolume
-    soundData.SoundLevel = newSoundLevel
+    rawset( soundData, "Volume", newVolume )
+    rawset( soundData, "SoundLevel", newSoundLevel )
 
     return true
 end

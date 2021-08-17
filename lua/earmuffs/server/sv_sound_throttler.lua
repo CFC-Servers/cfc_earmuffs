@@ -4,12 +4,14 @@ CFCEarmuffs.SoundThrottler = CFCEarmuffs.SoundThrottler or {}
 -- Stores Entities to tables of Sound Names to time values (next time that sound can be transmitted)
 CFCEarmuffs.SoundThrottler.Throttle = {}
 local Throttle = CFCEarmuffs.SoundThrottler.Throttle
-
-local SysTime = SysTime
-local rawset = rawset
-local rawget = rawget
-
 local entEmitInterval = CFCEarmuffs.Config.ENT_EMIT_INTERVAL
+local Logger = CFCEarmuffs.logger
+
+local rawget = rawget
+local rawset = rawset
+local pairs = pairs
+local IsValid = IsValid
+local SysTime = SysTime
 
 CFCEarmuffs.SoundThrottler.throttleSoundForEnt = function( soundName, originEnt )
     local nextSoundPlay = SysTime() + entEmitInterval
@@ -32,10 +34,13 @@ CFCEarmuffs.SoundThrottler.shouldThrottleSoundForEnt = function( soundName, orig
 end
 
 local function groomThrottler()
+    Logger:debug( "Grooming throttler" )
+
+    local now = SysTime()
     for originEnt, throttleData in pairs( Throttle ) do
         if IsValid( originEnt ) then
             for soundName, nextPlay in pairs( throttleData ) do
-                if nextPlay <= SysTime() then
+                if nextPlay <= now then
                     rawset( throttleData, soundName, nil )
                 end
             end

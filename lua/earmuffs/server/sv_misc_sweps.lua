@@ -5,13 +5,16 @@ local miscSweps = {
     ins2rpg7 = true
 }
 
+local rawget = rawget
+local rawset = rawset
 local Split = string.Split
 local CleanSoundName = utils.CleanSoundName
 local broadcastEntityEmitSound = utils.broadcastEntityEmitSound
 
-local function isMiscSwepSound( soundData )
-    local nameSpl = CleanSoundName( soundData.SoundName )
-    nameSpl = Split( nameSpl, "/" )
+local cache = {}
+
+local function _isMiscSwepSound( soundName )
+    local nameSpl = Split( soundName, "/" )
 
     if rawget( nameSpl, 1 ) ~= "weapons" then return false end
 
@@ -21,7 +24,18 @@ local function isMiscSwepSound( soundData )
     return false
 end
 
+local function _isMiscSwepSound( soundName )
+    local cached = rawget( cache, soundName )
+    if cached ~= nil then return cached end
+
+    local result = _isMiscSwepSound( soundName )
+    rawset( cache, soundName, result )
+
+    return result
+end
+
 local function handleMiscSwepSound( soundData )
+    local soundName = CleanSoundName( rawget( soundData, "SoundName" ) )
     if not isMiscSwepSound( soundData ) then return end
 
     return broadcastEntityEmitSound( soundData )
