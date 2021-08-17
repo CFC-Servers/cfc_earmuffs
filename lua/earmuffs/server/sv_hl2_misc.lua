@@ -11,9 +11,9 @@ local rawget = rawget
 local utils = CFCEarmuffs.Utils
 local CleanSoundName = CFCEarmuffs.Utils.CleanSoundName
 local broadcastEntityEmitSound = CFCEarmuffs.Utils.broadcastEntityEmitSound
+local maintainCase = true
 
 local function isHL2Misc( soundData )
-    local maintainCase = true
     local soundName = CleanSoundName(
         soundData.OriginalSoundName,
         maintainCase
