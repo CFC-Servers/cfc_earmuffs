@@ -14,7 +14,7 @@ local rawset = rawset
 
 local IsValid = IsValid
 
-local Settings = CFCEarmuffs.Settings
+local SettingsGet = CFCEarmuffs.Settings.Get
 local Logger = CFCEarmuffs.logger
 
 if SERVER then
@@ -48,7 +48,7 @@ CFCEarmuffs.Utils.CleanSoundName = function( soundName, maintainCase )
 end
 
 CFCEarmuffs.Utils.modifyCombatVolume = function( soundVolume )
-    local mult = rawget( Settings, "CombatVolumeMult" ) or 1
+    local mult = SettingsGet( "CombatVolumeMult" )
     local newVolume = soundVolume * mult
 
     Logger:debug(
@@ -60,7 +60,7 @@ end
 local modifyCombatVolume = CFCEarmuffs.Utils.modifyCombatVolume
 
 CFCEarmuffs.Utils.modifyCombatSoundLevel = function( soundLevel )
-    local newSoundLevel = soundLevel * rawget( Settings, "CombatVolumeMult" )
+    local newSoundLevel = soundLevel * SettingsGet( "CombatVolumeMult" )
 
     return newSoundLevel
 end

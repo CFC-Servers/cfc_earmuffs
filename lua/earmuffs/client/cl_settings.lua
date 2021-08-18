@@ -1,7 +1,11 @@
 AddCSLuaFile()
 
+local rawget = rawget
+
 CFCEarmuffs = CFCEarmuffs or {}
 CFCEarmuffs.Settings = CFCEarmuffs.Settings or {}
+
+local Settings = CFCEarmuffs.Settings
 local logger = CFCEarmuffs.logger
 
 local SETTINGS_DEFAULTS = {
@@ -14,22 +18,29 @@ local SETTINGS_NAMES = {
     CombatSoundLevelMult = "CFC_Earmuffs_CombatSoundLevelMult"
 }
 
-CFCEarmuffs.Settings.settingNames = SETTINGS_NAMES
-CFCEarmuffs.Settings.pendingSettingsUpdate = {}
-CFCEarmuffs.Settings.updateSettingsTimer = "CFC_Earmuffs_DelayedUpdateSettings"
+local pendingSettingsUpdate = {}
 
-timer.Create( CFCEarmuffs.Settings.updateSettingsTimer, 0.5, 0, function()
-    CFCEarmuffs.Settings.SavePreferences( CFCEarmuffs.Settings.pendingSettingsUpdate )
+updateSettingsTimer = "CFC_Earmuffs_DelayedUpdateSettings"
 
-    CFCEarmuffs.Settings.pendingSettingsUpdate = {}
-    timer.Stop( CFCEarmuffs.Settings.updateSettingsTimer )
+Settings.Get = function( shortcode )
+    local val = rawget( Settings, shortcode )
+    if val ~= nil then return val end
+
+    return rawget( SETTINGS_DEFAULTS, shortcode )
+end
+
+timer.Create( updateSettingsTimer, 0.5, 0, function()
+    CFCEarmuffs.Settings.SavePreferences( pendingSettingsUpdate )
+
+    pendingSettingsUpdate = {}
+    timer.Stop( updateSettingsTimer )
 end )
 
 CFCEarmuffs.Settings.SavePreferences = function( preferences )
     logger:debug( "Saving preferences to persistant storage" )
 
     for settingShortcode, settingValue in pairs( preferences ) do
-        local settingName = CFCEarmuffs.Settings.settingNames[settingShortcode]
+        local settingName = rawget( SETTING_NAMES, settingShortcode )
 
         settingValue = tostring( settingValue )
 
@@ -47,10 +58,10 @@ function CFCEarmuffs.Settings:ReceivePreferenceUpdate( settingName, settingValue
     logger:debug( "Received a preference update. '" .. settingName .. "' set to '" .. settingValue .. "'" )
 
     -- Queue it for persistent storage update
-    self.pendingSettingsUpdate[settingName] = settingValue
+    pendingSettingsUpdate[settingName] = settingValue
 
     -- Start, or restart if already running
-    timer.Start( self.updateSettingsTimer )
+    timer.Start( updateSettingsTimer )
 
     -- Update in-memory value immediately
     self[settingName] = settingValue
@@ -66,7 +77,7 @@ local function initialSetup()
 
         logger:debug( "Loaded preference '" .. settingShortcode .. "', value read as '" .. cookieValue .. "'" )
 
-        CFCEarmuffs.Settings[settingShortcode] = cookieValue
+        Settings[settingShortcode] = cookieValue
     end
 
     hook.Remove( "Think", "CFC_Earmuffs_ClientSetup" )

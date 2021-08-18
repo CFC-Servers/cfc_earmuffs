@@ -2,13 +2,13 @@ AddCSLuaFile()
 
 local rawget = rawget
 local logger = CFCEarmuffs.logger
-local settings = CFCEarmuffs.Settings
+local SettingsGet = CFCEarmuffs.Settings.Get
 local IsValid = IsValid
 
 hook.Add( "PlayerSwitchWeapon", "CFC_Earmuffs_OnPlayerSwitchWeapon", function( ply, oldWep, newWep )
     if not( IsValid( newWep ) ) then return end
 
-    local multiplier = rawget( settings, "CombatVolumeMult" ) * 100
+    local multiplier = SettingsGet( "CombatVolumeMult" ) * 100
 
     if ( newWep.Primary ) then
         newWep.Primary.SoundLevel = multiplier

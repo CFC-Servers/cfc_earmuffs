@@ -2,14 +2,14 @@ AddCSLuaFile()
 
 local rawget = rawget
 local logger = CFCEarmuffs.logger
-local settings = CFCEarmuffs.Settings
+local SettingsGet = CFCEarmuffs.Settings.Get
 local utils = CFCEarmuffs.Utils
 local ReceiveEmitSound = utils.ReceiveEmitSound
 
 local function receiveNetworkedSound()
     logger:debug( "Received networked sound!" )
 
-    if rawget( settings, "CombatVolumeMult" ) == 0 then return end
+    if SettingsGet( "CombatVolumeMult" ) == 0 then return end
 
     ReceiveEmitSound()
 end

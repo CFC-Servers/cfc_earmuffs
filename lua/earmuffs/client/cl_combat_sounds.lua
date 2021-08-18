@@ -5,7 +5,7 @@ local rawset = rawset
 
 local logger = CFCEarmuffs.logger
 local utils = CFCEarmuffs.Utils
-local settings = CFCEarmuffs.Settings
+local SettingsGet = CFCEarmuffs.Settings.Get
 local StartWith = string.StartWith
 local CleanSoundName = utils.CleanSoundName
 
@@ -80,7 +80,7 @@ local function shouldPlayCombatSound( soundData )
 
     logger:debug( "Received Combat Sound!" )
 
-    if settings.CombatVolumeMult == 0 then return false end
+    if SettingsGet( "CombatVolumeMult" ) == 0 then return false end
 
     local soundVolume = soundData.Volume
     local soundLevel = soundData.SoundLevel
