@@ -13,12 +13,15 @@ local rawget = rawget
 local rawset = rawset
 
 local IsValid = IsValid
-
-local SettingsGet = CFCEarmuffs.Settings.Get
 local Logger = CFCEarmuffs.logger
 
 if SERVER then
     util.AddNetworkString( "CFC_Earmuffs_OnEntityEmitSound" )
+end
+
+local SettingsGet
+if CLIENT then
+    SettingsGet = CFCEarmuffs.Settings.Get
 end
 
 local cleanCache = {}
