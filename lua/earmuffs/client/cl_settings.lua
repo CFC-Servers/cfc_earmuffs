@@ -22,7 +22,7 @@ local pendingSettingsUpdate = {}
 
 updateSettingsTimer = "CFC_Earmuffs_DelayedUpdateSettings"
 
-Settings.Get = function( shortcode )
+CFCEarmuffs.Settings.Get = function( shortcode )
     local val = rawget( Settings, shortcode )
     if val ~= nil then return val end
 
