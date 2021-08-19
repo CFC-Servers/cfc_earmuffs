@@ -40,7 +40,7 @@ CFCEarmuffs.Settings.SavePreferences = function( preferences )
     logger:debug( "Saving preferences to persistant storage" )
 
     for settingShortcode, settingValue in pairs( preferences ) do
-        local settingName = rawget( SETTING_NAMES, settingShortcode )
+        local settingName = rawget( SETTINGS_NAMES, settingShortcode )
 
         settingValue = tostring( settingValue )
 
