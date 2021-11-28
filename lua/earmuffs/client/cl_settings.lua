@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 local rawget = rawget
+local tostring = tostring
 
 CFCEarmuffs = CFCEarmuffs or {}
 CFCEarmuffs.Settings = CFCEarmuffs.Settings or {}
@@ -10,12 +11,14 @@ local logger = CFCEarmuffs.logger
 
 local SETTINGS_DEFAULTS = {
     CombatVolumeMult = 0.2,
-    CombatSoundLevelMult = 0.2
+    CombatSoundLevelMult = 0.2,
+    AmbianceVolumeMult = 0.2
 }
 
 local SETTINGS_NAMES = {
     CombatVolumeMult = "CFC_Earmuffs_CombatVolumeMult",
-    CombatSoundLevelMult = "CFC_Earmuffs_CombatSoundLevelMult"
+    CombatSoundLevelMult = "CFC_Earmuffs_CombatSoundLevelMult",
+    AmbianceVolumeMult = "CFC_Earmuffs_AmbianceVolumeMult"
 }
 
 local pendingSettingsUpdate = {}
@@ -68,6 +71,8 @@ function CFCEarmuffs.Settings:ReceivePreferenceUpdate( settingName, settingValue
 end
 
 local function initialSetup()
+    hook.Remove( "Think", "CFC_Earmuffs_ClientSetup" )
+
     logger:info( "Initializing Preferences" )
 
     for settingShortcode, settingName in pairs( SETTINGS_NAMES ) do
@@ -79,8 +84,6 @@ local function initialSetup()
 
         Settings[settingShortcode] = cookieValue
     end
-
-    hook.Remove( "Think", "CFC_Earmuffs_ClientSetup" )
 end
 
 hook.Add( "Think", "CFC_Earmuffs_ClientSetup", initialSetup )

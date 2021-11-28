@@ -72,7 +72,7 @@ local function isCombatSound( soundData )
     return false
 end
 
-local modifyCombatVolume = utils.modifyCombatVolume
+local modifySoundVolume = utils.modifySoundVolume
 local modifyCombatSoundLevel = utils.modifyCombatSoundLevel
 
 local function shouldPlayCombatSound( soundData )
@@ -80,13 +80,17 @@ local function shouldPlayCombatSound( soundData )
 
     logger:debug( "Received Combat Sound!" )
 
-    if SettingsGet( "CombatVolumeMult" ) == 0 then return false end
+    local volumeMult = SettingsGet( "CombatVolumeMult" )
+    if volumeMult == 0 then return false end
 
-    local soundVolume = soundData.Volume
-    local soundLevel = soundData.SoundLevel
+    local levelMult = SettingsGet( "CombatSoundLevelMult" )
+    if levelMult == 0 then return false end
 
-    local newVolume = modifyCombatVolume( soundVolume )
-    local newSoundLevel = modifyCombatSoundLevel( soundLevel )
+    local soundVolume = rawget( soundData, "Volume" )
+    local soundLevel = rawget( soundData, "SoundLevel" )
+
+    local newVolume = modifySoundVolume( soundVolume, volumeMult )
+    local newSoundLevel = modifySoundLevel( soundLevel, levelMult )
 
     rawset( soundData, "Volume", newVolume )
     rawset( soundData, "SoundLevel", newSoundLevel )

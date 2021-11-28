@@ -6,15 +6,15 @@ local SettingsGet = CFCEarmuffs.Settings.Get
 local IsValid = IsValid
 
 hook.Add( "PlayerSwitchWeapon", "CFC_Earmuffs_OnPlayerSwitchWeapon", function( ply, oldWep, newWep )
-    if not( IsValid( newWep ) ) then return end
+    if not IsValid( newWep ) then return end
 
     local multiplier = SettingsGet( "CombatVolumeMult" ) * 100
 
-    if ( newWep.Primary ) then
+    if newWep.Primary then
         newWep.Primary.SoundLevel = multiplier
     end
 
-    if ( newWep.Secondary ) then
+    if newWep.Secondary then
         newWep.Secondary.SoundLevel = multiplier
     end
 end )

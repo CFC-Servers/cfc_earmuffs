@@ -15,7 +15,7 @@ local maintainCase = true
 
 local function isHL2Misc( soundData )
     local soundName = CleanSoundName(
-        soundData.OriginalSoundName,
+        rawget( soundData, "OriginalSoundName" ),
         maintainCase
     )
 

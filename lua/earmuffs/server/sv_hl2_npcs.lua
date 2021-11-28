@@ -32,9 +32,7 @@ local function _isHL2NPCSound( soundName )
 
     local npcType = spl[2]
 
-    if rawget( hl2NPCs, npcType ) then return true end
-
-    return false
+    return rawget( hl2NPCs, npcType ) or false
 end
 
 local function isHL2NPCSound( soundName )
