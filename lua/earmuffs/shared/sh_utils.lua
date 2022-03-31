@@ -46,19 +46,20 @@ CFCEarmuffs.Utils.modifyCombatVolume = function( soundVolume )
 
     return newVolume
 end
+local modifyCombatVolume = CFCEarmuffs.Utils.modifyCombatVolume
 
 CFCEarmuffs.Utils.modifyCombatSoundLevel = function( soundLevel )
     local newSoundLevel = soundLevel * rawget( Settings, "CombatVolumeMult" )
 
     return newSoundLevel
 end
-
 local modifyCombatSoundLevel = CFCEarmuffs.Utils.modifyCombatSoundLevel
+
 function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, soundPitch, volume, soundChannel, soundFlags)
     if not IsValid( originEnt ) then return end
 
-    local newVolume = self.modifyCombatVolume( volume )
-    local newSoundLevel = self.modifyCombatSoundLevel( soundLevel )
+    local newVolume = modifyCombatVolume( volume )
+    local newSoundLevel = modifyCombatSoundLevel( soundLevel )
 
     EmitSound( soundName, originEnt:GetPos(), originEnt:EntIndex(), soundChannel, newVolume, newSoundLevel, soundFlags, soundPitch )
 end
@@ -70,8 +71,9 @@ if CLIENT then
     local ReadString = net.ReadString
     local ReadEntity = net.ReadEntity
     local ReadFloat = net.ReadFloat
+    local PlaySoundFor = CFCEarmuffs.Utils.PlaySoundFor
 
-    function CFCEarmuffs.Utils:ReceiveEmitSound()
+    function CFCEarmuffs.Utils.ReceiveEmitSound()
         local soundName = ReadString()
         local originEnt = ReadEntity()
 
@@ -83,7 +85,7 @@ if CLIENT then
         local soundFlags = ReadUInt( 11 )
         local soundVolume = ReadFloat()
 
-        self:PlaySoundFor( originEnt, soundName, soundLevel, soundPitch, soundVolume, soundChannel, soundFlags )
+        PlaySoundFor( originEnt, soundName, soundLevel, soundPitch, soundVolume, soundChannel, soundFlags )
     end
 end
 

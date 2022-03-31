@@ -9,7 +9,7 @@ local function receiveNetworkedSound()
 
     if settings.CombatVolumeMult == 0 then return end
 
-    utils:ReceiveEmitSound()
+    utils.ReceiveEmitSound()
 end
 
 net.Receive( "CFC_Earmuffs_OnEntityEmitSound", receiveNetworkedSound )
