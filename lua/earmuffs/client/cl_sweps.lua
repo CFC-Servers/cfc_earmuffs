@@ -4,7 +4,7 @@ local logger = CFCEarmuffs.logger
 local settings = CFCEarmuffs.Settings
 local IsValid = IsValid
 
-hook.Add( "PlayerSwitchWeapon", "CFC_Earmuffs_OnPlayerSwitchWeapon", function( ply, oldWep, newWep )
+hook.Add( "PlayerSwitchWeapon", "CFC_Earmuffs_OnPlayerSwitchWeapon", function( _, _, newWep )
     if not ( IsValid( newWep ) ) then return end
 
     local multiplier = settings.CombatVolumeMult
