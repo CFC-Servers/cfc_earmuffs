@@ -43,10 +43,10 @@ end
 
 local function _isCombatSoundOriginal( soundName )
     soundName = CleanSoundName( soundName )
-    if StartWith( originalName, "weapon" ) then return true end
-    if StartWith( originalName, "flesh" ) then return true end
-    if StartWith( originalName, "metal" ) then return true end
-    if StartWith( originalName, "cw_" ) then return true end
+    if StartWith( soundName, "weapon" ) then return true end
+    if StartWith( soundName, "flesh" ) then return true end
+    if StartWith( soundName, "metal" ) then return true end
+    if StartWith( soundName, "cw_" ) then return true end
     if rawget( isImpactSound, soundName ) then return true end
 
     return false
@@ -75,7 +75,7 @@ local function isCombatSound( soundData )
 end
 
 local modifySoundVolume = utils.modifySoundVolume
-local modifyCombatSoundLevel = utils.modifyCombatSoundLevel
+local modifySoundLevel = utils.modifySoundLevel
 
 local function shouldPlayCombatSound( soundData )
     if not isCombatSound( soundData ) then return end
@@ -92,7 +92,7 @@ local function shouldPlayCombatSound( soundData )
     local soundLevel = rawget( soundData, "SoundLevel" )
 
     local newVolume = modifySoundVolume( soundVolume, volumeMult )
-    local newSoundLevel = modifyCombatSoundLevel( soundLevel, levelMult )
+    local newSoundLevel = modifySoundLevel( soundLevel, levelMult )
 
     rawset( soundData, "Volume", newVolume )
     rawset( soundData, "SoundLevel", newSoundLevel )

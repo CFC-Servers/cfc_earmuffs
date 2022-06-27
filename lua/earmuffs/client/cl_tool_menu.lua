@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 local settings = CFCEarmuffs.Settings
+local black = Color( 0, 0, 0, 255 )
 
 hook.Add( "PopulateToolMenu", "CFC_Earmuffs_PopulateToolMenu", function()
     spawnmenu.AddToolMenuOption( "Options", "CFC", "Sound Control", "Sound Control", "", "", function( panel )
@@ -8,12 +9,8 @@ hook.Add( "PopulateToolMenu", "CFC_Earmuffs_PopulateToolMenu", function()
 
         do
             local settingName = "CombatVolumeMult"
-            local CombatSoundSlider = vgui.Create( "DNumSlider", panel )
+            local CombatSoundSlider = panel:NumSlider( "Combat Sound Volume", nil, 0, 100, 0 )
 
-            CombatSoundSlider:SetText( "Combat Sound Volume" )
-            CombatSoundSlider:Dock( TOP )
-            CombatSoundSlider:SetMinMax( 0, 100 )
-            CombatSoundSlider:SetDecimals( 0 )
             CombatSoundSlider:SetValue( settings[settingName] * 100 )
             CombatSoundSlider.OnValueChanged = function( _, newValue )
                 settings:ReceivePreferenceUpdate( settingName, newValue )
@@ -22,16 +19,17 @@ hook.Add( "PopulateToolMenu", "CFC_Earmuffs_PopulateToolMenu", function()
 
         do
             local settingName = "AmbianceVolumeMult"
-            local AmbianceSoundSlider = vgui.Create( "DNumSlider", panel )
+            local AmbianceSoundSlider = panel:NumSlider( "Ambient Sound Volume", nil, 0, 100, 0 )
 
-            AmbianceSoundSlider:SetText( "Ambient Sound Volume" )
-            AmbianceSoundSlider:Dock( TOP )
-            AmbianceSoundSlider:SetMinMax( 0, 100 )
-            AmbianceSoundSlider:SetDecimals( 0 )
             AmbianceSoundSlider:SetValue( settings[settingName] * 100 )
             AmbianceSoundSlider.OnValueChanged = function( _, newValue )
                 settings:ReceivePreferenceUpdate( settingName, newValue )
             end
         end
+
+        panel:Help( "" )
+
+        panel:Help( "Sometimes you need to reset all sounds for these settings to take effect" )
+        panel:Button( "Reset Sounds", "stopsound" )
     end )
 end )
