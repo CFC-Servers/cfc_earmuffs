@@ -8,7 +8,6 @@ local hl2CombatSounds = {
 }
 
 local rawget = rawget
-local utils = CFCEarmuffs.Utils
 local CleanSoundName = CFCEarmuffs.Utils.CleanSoundName
 local broadcastEntityEmitSound = CFCEarmuffs.Utils.broadcastEntityEmitSound
 local maintainCase = true
