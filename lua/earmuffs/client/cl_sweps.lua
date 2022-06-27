@@ -1,11 +1,10 @@
 AddCSLuaFile()
 
-local rawget = rawget
 local logger = CFCEarmuffs.logger
 local SettingsGet = CFCEarmuffs.Settings.Get
 local IsValid = IsValid
 
-hook.Add( "PlayerSwitchWeapon", "CFC_Earmuffs_OnPlayerSwitchWeapon", function( ply, oldWep, newWep )
+hook.Add( "PlayerSwitchWeapon", "CFC_Earmuffs_OnPlayerSwitchWeapon", function( _, _, newWep )
     if not IsValid( newWep ) then return end
 
     local multiplier = SettingsGet( "CombatVolumeMult" ) * 100

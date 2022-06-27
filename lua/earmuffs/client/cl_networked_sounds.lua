@@ -1,6 +1,5 @@
 AddCSLuaFile()
 
-local rawget = rawget
 local logger = CFCEarmuffs.logger
 local SettingsGet = CFCEarmuffs.Settings.Get
 local utils = CFCEarmuffs.Utils

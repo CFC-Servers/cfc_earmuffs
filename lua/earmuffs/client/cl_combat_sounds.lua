@@ -29,6 +29,7 @@ local isShellSound = {
 local cache = {}
 
 local function _isCombatSoundBasic( soundName )
+    soundName = CleanSoundName( soundName )
     if StartWith( soundName, "weapon" ) then return true end
     if StartWith( soundName, "npc" ) then return true end
     if StartWith( soundName, "ambient/explosions" ) then return true end
@@ -41,6 +42,7 @@ local function _isCombatSoundBasic( soundName )
 end
 
 local function _isCombatSoundOriginal( soundName )
+    soundName = CleanSoundName( soundName )
     if StartWith( originalName, "weapon" ) then return true end
     if StartWith( originalName, "flesh" ) then return true end
     if StartWith( originalName, "metal" ) then return true end
@@ -66,7 +68,7 @@ local function isCombatSound( soundData )
     if basicResult then return basicResult end
 
     local soundNameOriginal = rawget( soundData, "OriginalSoundName" )
-    local originalResult = _isCombatSound( soundName, _isCombatSoundOriginal )
+    local originalResult = _isCombatSound( soundNameOriginal, _isCombatSoundOriginal )
     if originalResult then return originalResult end
 
     return false
@@ -90,7 +92,7 @@ local function shouldPlayCombatSound( soundData )
     local soundLevel = rawget( soundData, "SoundLevel" )
 
     local newVolume = modifySoundVolume( soundVolume, volumeMult )
-    local newSoundLevel = modifySoundLevel( soundLevel, levelMult )
+    local newSoundLevel = modifyCombatSoundLevel( soundLevel, levelMult )
 
     rawset( soundData, "Volume", newVolume )
     rawset( soundData, "SoundLevel", newSoundLevel )
