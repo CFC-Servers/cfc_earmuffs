@@ -40,6 +40,7 @@ mapAmbiance["gm_bigcity_improved_lite"] = {
 
 mapAmbiance["gm_construct"] = {
     ["ambient/forest_day.wav"] = true,
+    ["ambient/construct_tone.wav"] = true,
     ["ambient/levels/forest/treewind1.wav"] = true,
     ["ambient/levels/forest/treewind2.wav"] = true,
     ["ambient/levels/forest/treewind3.wav"] = true,
@@ -50,7 +51,6 @@ mapAmbiance["gm_construct"] = {
     ["ambient/levels/forest/dist_birds4.wav"] = true,
     ["ambient/levels/forest/dist_birds5.wav"] = true,
     ["ambient/levels/forest/dist_birds6.wav"] = true,
-
 }
 
 local currentMapSounds = {}
