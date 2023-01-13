@@ -18,7 +18,6 @@ local SETTINGS_DEFAULTS = {
 local SETTINGS_NAMES = {
     CombatVolumeMult = "CFC_Earmuffs_CombatVolumeMult",
     CombatSoundLevelMult = "CFC_Earmuffs_CombatSoundLevelMult",
-    AmbianceVolumeMult = "CFC_Earmuffs_AmbianceVolumeMult"
 }
 
 local pendingSettingsUpdate = {}
@@ -47,7 +46,7 @@ CFCEarmuffs.Settings.SavePreferences = function( preferences )
 
         settingValue = tostring( settingValue )
 
-        logger:debug( "Setting '" .. settingName .. "' to '" .. settingValue .. "'")
+        logger:debug( "Setting '" .. settingName .. "' to '" .. settingValue .. "'" )
 
         cookie.Set( settingName, settingValue )
     end

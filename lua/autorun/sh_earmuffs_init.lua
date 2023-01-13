@@ -19,7 +19,6 @@ if SERVER then
     include( "earmuffs/server/sv_sound_throttler.lua" )
     include( "earmuffs/shared/sh_utils.lua" )
     include( "earmuffs/server/sv_weapon_ext.lua" )
-    include( "earmuffs/server/sv_hl2_sweps.lua" )
     include( "earmuffs/server/sv_hl2_npcs.lua" )
     include( "earmuffs/server/sv_hl2_misc.lua" )
     include( "earmuffs/server/sv_misc_sweps.lua" )

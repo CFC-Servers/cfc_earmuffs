@@ -7,12 +7,11 @@ local rawget = rawget
 local rawset = rawset
 local isstring = isstring
 local EmitSound = EmitSound
-local RecipientFilter = RecipientFilter
 
-local stringLen = string.len
-local stringLower = string.lower
-local stringRight = string.Right
-local stringReplace = string.Replace
+local string_len = string.len
+local string_lower = string.lower
+local string_right = string.Right
+local string_replace = string.Replace
 
 local IsValid = IsValid
 local logger = CFCEarmuffs.logger
@@ -29,20 +28,19 @@ end
 
 
 local cleanCache = {}
-
 utils.CleanSoundName = function( soundName, maintainCase )
     local cached = rawget( cleanCache, soundName )
 
     if not cached then
         local cleanSound = soundName
-        cleanSound = stringReplace( cleanSound, ")", "" )
-        cleanSound = stringReplace( cleanSound, "^", "" )
-        cleanSound = stringReplace( cleanSound, "<", "" )
+        cleanSound = string_replace( cleanSound, ")", "" )
+        cleanSound = string_replace( cleanSound, "^", "" )
+        cleanSound = string_replace( cleanSound, "<", "" )
 
         -- Leading slash for some reason
         if cleanSound[1] == "/" then
             -- Get everything after the leading slash
-            cleanSound = stringRight( cleanSound, stringLen( cleanSound ) - 1 )
+            cleanSound = string_right( cleanSound, string_len( cleanSound ) - 1 )
         end
 
         rawset( cleanCache, soundName, cleanSound )
@@ -51,7 +49,7 @@ utils.CleanSoundName = function( soundName, maintainCase )
 
     if maintainCase then return cached end
 
-    return stringLower( cached )
+    return string_lower( cached )
 end
 
 utils.modifySoundVolume = function( soundVolume, mult )
@@ -78,12 +76,14 @@ utils.modifySoundLevel = function( soundLevel, mult )
 end
 local modifySoundLevel = utils.modifySoundLevel
 
+-- FIXME: This assumes all played sounds will be Combat sounds
 function utils.PlaySoundFor( originEnt, soundName, soundLevel, soundPitch, volume, soundChannel, soundFlags )
     if not IsValid( originEnt ) then return end
 
     local newVolume = modifySoundVolume( volume, "CombatVolumeMult" )
-    local newSoundLevel = modifySoundLevel( soundLevel, "CombatSoundLevelMult" )
+    local newSoundLevel = modifySoundLevel( soundLevel, "CombatLevelMult" )
 
+    logger:debug( "Playing:", soundName, soundChannel, newVolume, newSoundLevel )
     EmitSound( soundName, originEnt:GetPos(), originEnt:EntIndex(), soundChannel, newVolume, newSoundLevel, soundFlags, soundPitch )
 end
 local playSoundFor = utils.PlaySoundFor
@@ -100,10 +100,8 @@ if CLIENT then
         local soundName = ReadString()
         local originEnt = ReadEntity()
 
-        if originEnt:IsWeapon() then
-            if originEnt:GetOwner() == LocalPlayer then
-                return
-            end
+        if originEnt:IsWeapon() and originEnt:GetOwner() == LocalPlayer then
+            return
         end
 
         local soundChannel = ReadUInt( 9 )
@@ -117,6 +115,7 @@ if CLIENT then
 end
 
 if SERVER then
+    -- TODO: Per-tick cache of sounds to send?
 
     local WriteString = net.WriteString
     local WriteEntity = net.WriteEntity
@@ -124,15 +123,13 @@ if SERVER then
     local WriteFloat = net.WriteFloat
     local unreliable = true
 
-    local function findSoundTriggerer( originEnt )
+    local function _findSoundTriggerer( originEnt )
         if originEnt:IsPlayer() then return originEnt end
 
         local owner = originEnt:GetOwner()
 
-        if IsValid( owner ) then
-            if owner:IsPlayer() then
-                return owner
-            end
+        if IsValid( owner ) and owner:IsPlayer() then
+            return owner
         end
 
         return originEnt:CPPIGetOwner()
@@ -143,9 +140,22 @@ if SERVER then
         -- TODO: What now?
    end
 
+   local cachedTriggerer
+   local triggererCache = {}
+   local function findSoundTriggerer( originEnt )
+       cachedTriggerer = rawget( triggererCache, originEnt )
+       if cachedTriggerer then return cached end
+
+       cachedTriggerer = _findSoundTriggerer( originEnt )
+       rawset( triggererCache, originEnt, cachedTriggerer )
+
+       return cachedTriggerer
+   end
+
    local shouldThrottleSoundForEnt = CFCEarmuffs.SoundThrottler.shouldThrottleSoundForEnt
    local throttleSoundForEnt = CFCEarmuffs.SoundThrottler.throttleSoundForEnt
 
+   local recipientFilter = RecipientFilter()
    utils.broadcastEntityEmitSound = function( soundData )
        local originEnt = rawget( soundData, "Entity" )
        if not IsValid( originEnt ) then return end
@@ -165,7 +175,7 @@ if SERVER then
        local soundFlags = rawget( soundData, "Flags" ) or 0
 
        local soundTriggerer = findSoundTriggerer( originEnt )
-       local recipientFilter = RecipientFilter()
+       recipientFilter:RemoveAllPlayers()
        recipientFilter:AddPAS( soundPos )
 
        if soundTriggerer then

@@ -12,9 +12,9 @@ function weaponMeta:EmitSound( soundName, soundLevel, soundPitch, soundVolume, s
     soundData = {
         SoundName = soundName,
         Entity = self,
-        SoundLevel = soundLevel or 50,
+        SoundLevel = soundLevel or 75,
         Pitch = soundPitch or 100,
-        Volume = soundVolume or 0.5,
+        Volume = soundVolume or 1,
         Channel = soundChannel or CHAN_WEAPON
     }
 
