@@ -35,7 +35,7 @@ CFCEarmuffs.Settings.SavePreferences = function( preferences )
 
         settingValue = tostring( settingValue )
 
-        logger:debug( "Setting '" .. settingName .. "' to '" .. settingValue .. "'")
+        logger:debug( "Setting '" .. settingName .. "' to '" .. settingValue .. "'" )
 
         cookie.Set( settingName, settingValue )
     end

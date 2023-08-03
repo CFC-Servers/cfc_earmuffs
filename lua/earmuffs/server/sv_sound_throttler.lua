@@ -18,7 +18,7 @@ CFCEarmuffs.SoundThrottler.throttleSoundForEnt = function( soundName, originEnt 
     if throttleData then
         rawset( throttleData, soundName, nextSoundPlay )
     else
-        rawset( Throttle, originEnt, {[soundName] = nextSoundPlay} )
+        rawset( Throttle, originEnt, { [soundName] = nextSoundPlay } )
     end
 end
 
@@ -45,4 +45,4 @@ local function groomThrottler()
     end
 end
 
-timer.Create("CFC_Earmuffs_GroomThrottle", 5, -1, groomThrottler)
+timer.Create( "CFC_Earmuffs_GroomThrottle", 5, -1, groomThrottler )
