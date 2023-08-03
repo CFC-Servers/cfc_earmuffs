@@ -55,7 +55,7 @@ CFCEarmuffs.Utils.modifyCombatSoundLevel = function( soundLevel )
 end
 local modifyCombatSoundLevel = CFCEarmuffs.Utils.modifyCombatSoundLevel
 
-function CFCEarmuffs.Utils:PlaySoundFor(originEnt, soundName, soundLevel, soundPitch, volume, soundChannel, soundFlags)
+function CFCEarmuffs.Utils:PlaySoundFor( originEnt, soundName, soundLevel, soundPitch, volume, soundChannel, soundFlags )
     if not IsValid( originEnt ) then return end
 
     local newVolume = modifyCombatVolume( volume )
@@ -128,7 +128,7 @@ if SERVER then
        if not IsValid( originEnt ) then return end
 
        if shouldThrottleSoundForEnt( soundName, originEnt ) then
-           Logger:debug("Discarding throttled sound: '" .. soundName .. "'")
+           Logger:debug( "Discarding throttled sound: '" .. soundName .. "'" )
            return false
        end
 
